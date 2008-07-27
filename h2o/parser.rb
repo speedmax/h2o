@@ -15,8 +15,10 @@ module H2o
       @source = source
       @filename = filename
       @tokenstream = tokenize
-      @nodelist = parse
+      @first = true
     end
+
+
 
     def tokenize
       result = []
@@ -40,22 +42,131 @@ module H2o
     end
     
     def parse(*untils)
+      
+      @nodelist = Nodelist.new
       @tokenstream.each do |token|
-        
+        token, content = token
+        case token
+          when :text :
+            @nodelist << TextNode.new(content) unless content.empty?
+          when :variable :
+            names = []
+            filters = []
+            Parser.parse_arguments(content).each do |argument|
+              if argument.is_a? Array
+                filters << argument
+              else
+                names << argument
+              end
+            end
+            @nodelist << VariableNode.new(names.first, filters)
+          when :block :
+            
+          when :comment :  
+            @nodelist << CommentNode.new(content)
+        end
+        @first = false
       end
+      
+      @nodelist
     end
     
     def parse_until(*args); end
     
     
-    def self.parse_arguments; end
+    def self.parse_arguments (argument)
+      parser = ArgumentLexer.new(argument)
+      result = current_buffer = []
+      filter_buffer = []
+
+      parser.lexer().each do |token|
+        token, data = token
+        if token == :filter_start
+          current_buffer = filter_buffer.clear
+        elsif token == :filter_end
+          result << filter_buffer.dup unless filter_buffer.empty?
+          current_buffer = result
+        elsif token == :name
+          current_buffer << data.to_sym
+        elsif token == :number
+          current_buffer << (data.include? '.')?  data.to_f : data.to_i
+        elsif token == :operator
+          current_buffer << {:operator => data}
+        end
+      end
+      
+      result
+    end
   end
   
-  class Lexer
-    
-  end
-  
+  require 'strscan'
   class ArgumentLexer
+    WHITESPACE_RE = /\s+/m
+    NAME_RE = /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*/
+    PIPE_RE = /\|/
+    SEPERATOR_RE = /,/
+    FILTER_END_RE = /;/
+    STRING_RE = /
+      (?:
+        "([^"\\]*(?:\\.[^"\\]*)*)"
+        |
+        '([^'\\]*(?:\\.[^'\\]*)*)'
+      )
+      /xm
     
+    NUMBER_RE = /\d+(\.\d*)?/
+    OPERATOR_RE = /\s+?(>|<|=|>=|<=|!=|==|=|and|not|or)\s+?/
+  
+    def initialize(argstring, pos = 0)
+      @argument = argstring
+    end
+    
+    def lexer
+      s = StringScanner.new(@argument)
+      state = :initial
+      result = []
+      while ! s.eos?
+        next if s.scan(WHITESPACE_RE)
+        
+        if state == :initial
+          if match = s.scan(NAME_RE)
+            result << [:name, match]
+          elsif match = s.scan(PIPE_RE)
+            state = :filter
+            result << [:filter_start, nil]
+          elsif match = s.scan(SEPERATOR_RE)
+            result << [:seperator, nil]
+          elsif match = s.scan(STRING_RE)
+            result << [:string, match]
+          elsif match = s.scan(NUMBER_RE)
+            result << [:number, match]
+          else 
+            raise "unexpected character"
+          end
+        elsif state == :filter
+          if match = s.scan(PIPE_RE)
+            result << [:filter_end, nil]
+            result << [:filter_start, nil]
+          elsif match = s.scan(SEPERATOR_RE)
+            result << [:seperator, nil]
+          elsif match = s.scan(FILTER_END_RE)
+            result << [:filter_end, nil]
+            state = :initial
+          elsif match = s.scan(NAME_RE)
+            result << [:name, match]
+          elsif match = s.scan(STRING_RE)
+            result << [:string, match]
+          elsif number = s.scan(NUMBER_RE)
+            result << [:number, match]
+          else 
+            raise "unexpected character"
+          end
+        end
+      end
+      result << [:filter_end, nil]  if state == :filter
+
+      result
+    end
+  
   end
 end

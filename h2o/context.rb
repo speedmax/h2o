@@ -1,18 +1,32 @@
 module H2o
   class Context
     def initialize(context)
-      @context = context
+      @stack = context
     end
   
-    def [](value); end
+    def [](name); 
+      @stack.each do |layer|
+        value = layer[name]
+        return value unless value.nil?
+      end
+    end
     
     def []=(name, value); end
     
-    def resolve(namespace); end
+    def resolve(path); 
+      current=self
+      path.split(/\./).each do |part|
+        sym = part.to_sym
+        
+        
+      end
+    end
     
     def defined?(name); end
     
-    def appliy_filters(object, filters);end
+    def apply_filters(object, filters);
+      object
+    end
   end
     
   class BlockContext
@@ -23,7 +37,7 @@ module H2o
     end
     
     def super
-      @block->render()
+      @block.render()
     end
     
     def depth
