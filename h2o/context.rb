@@ -58,7 +58,7 @@ module H2o
         raise "Filter not found" if filter.nil?
         
         args.map! do |arg|
-          if arg.kind_of Symbol
+          if arg.kind_of? Symbol
             resolve(arg)
           else
             arg

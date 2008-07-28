@@ -1,16 +1,33 @@
 module H2o::Tags
-  class TagNode < ::H2o::Node
+  @tags = {}
+  class << self
+    def [] name
+      @tags[name]
+    end
+    
+    def register(tag, name)
+      @tags[name] = tag
+    end
   end
   
-  class If < TagNode    
+  class Tag < ::H2o::Node
   end
   
-  class For < TagNode
+  class If < Tag
+    def initialize(parser, argstring)
+      
+    end
+    
+    def render (context, stream)
+    end
   end
   
-  class Block < TagNode
+  class For < Tag
   end
   
-  class Extends < TagNode
+  class Block < Tag
+  end
+  
+  class Extends < Tag
   end
 end

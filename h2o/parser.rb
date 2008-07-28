@@ -58,6 +58,11 @@ module H2o
             end
             @nodelist << VariableNode.new(names.first, filters)
           when :block :
+            name, *args = content.split(/\s+/, 2)
+            
+            if untils.include?(content)
+              return @nodelist
+            end
             
           when :comment :  
             @nodelist << CommentNode.new(content)
@@ -74,18 +79,23 @@ module H2o
 
       parser.lexer().each do |token|
         token, data = token
-        if token == :filter_start
-          current_buffer = filter_buffer.clear
-        elsif token == :filter_end
-          result << filter_buffer.dup unless filter_buffer.empty?
-          current_buffer = result
-        elsif token == :name
-          current_buffer << data.to_sym
-        elsif token == :number
-          current_buffer << (data.include? '.')?  data.to_f : data.to_i
-        elsif token == :operator
-          current_buffer << {:operator => data}
+        case token
+          when :filter_start
+            current_buffer = filter_buffer.clear
+          when :filter_end
+            result << filter_buffer.dup unless filter_buffer.empty?
+            current_buffer = result
+          when :name
+            current_buffer << data.to_sym
+          when :number
+            current_buffer << (data.include?('.') ? data.to_f : data.to_i)
+          when :string
+            data.match(ArgumentLexer::STRING_RE)
+            current_buffer << $1 || $2
+          when :operator
+            current_buffer << {:operator => data}
         end
+        
       end
       result
     end
@@ -148,7 +158,7 @@ module H2o
             result << [:name, match]
           elsif match = s.scan(STRING_RE)
             result << [:string, match]
-          elsif number = s.scan(NUMBER_RE)
+          elsif match = s.scan(NUMBER_RE)
             result << [:number, match]
           else 
             raise "unexpected character"

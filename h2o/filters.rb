@@ -24,7 +24,7 @@ module H2o
     end
     
     def test value, arg1, arg2
-      value
+      "#{value} #{arg1} #{arg2}" 
     end
   end
 
