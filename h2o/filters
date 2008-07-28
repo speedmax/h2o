@@ -1,0 +1,18 @@
+module H2o
+
+  class BuildInFilters
+    def upper string
+    end
+    
+    def lower string
+    
+  end
+
+  module Filters
+    @filters = []
+  
+    
+    def register
+    end
+  end
+end

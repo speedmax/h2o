@@ -18,8 +18,6 @@ module H2o
       @first = true
     end
 
-
-
     def tokenize
       result = []
       @source.scan(TAG_REGEX).each do |match|
@@ -42,7 +40,6 @@ module H2o
     end
     
     def parse(*untils)
-      
       @nodelist = Nodelist.new
       @tokenstream.each do |token|
         token, content = token
@@ -67,13 +64,9 @@ module H2o
         end
         @first = false
       end
-      
       @nodelist
     end
-    
-    def parse_until(*args); end
-    
-    
+
     def self.parse_arguments (argument)
       parser = ArgumentLexer.new(argument)
       result = current_buffer = []
@@ -94,7 +87,6 @@ module H2o
           current_buffer << {:operator => data}
         end
       end
-      
       result
     end
   end

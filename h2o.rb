@@ -5,6 +5,7 @@ module H2o
   require 'pathname'
   require 'h2o/constants'
   load 'h2o/nodes.rb'
+  load 'h2o/filters.rb'
   load 'h2o/parser.rb'
   load 'h2o/context.rb'
 
