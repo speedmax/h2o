@@ -1,10 +1,12 @@
 module H2o
   class Context
     #include Enumerable
-    def initialize(context)
+    def initialize(context ={})
       @stack = [context]
     end
   
+    # doing a reverse lookup
+    # FIXME: need to double check this, also changed Block#add_layer in reverse order
     def [](name); 
       @stack.each do |layer|
         value = layer[name]
@@ -24,23 +26,48 @@ module H2o
     def push(hash = {})
       @stack << hash
     end
-    
+
+    # def each &block
+    #   found = {}
+    #   @stack.reverse_each do |hash|
+    #     hash.each do |key, value|
+    #       next if found.include?(key)
+    #       found[key] = hash
+    #       block.call(key, value)
+    #     end
+    #   end
+    # end
+
     def resolve(path); 
       object = self
       path.to_s.split(/\./).each do |part|
         part_sym = part.to_sym
         
+        # Short cuts
+        case part_sym
+          when :first
+            return object.first
+          when :length
+            return object.length
+          when :last
+            return object.last
+          when :empty
+            return object.empty?
+        end
+        
+        # Hashes
         if object.respond_to?(:has_key?) && value = object[part_sym]
           object = value  
-        # Works for both Array and Hash like objects
+        # Array and Hash like objects
         elsif part.match /^-?\d+$/ 
-          if object.respond_to?(:has_key?) || object.response_to?(:fetch) && value = object[part.to_i]
+          if object.respond_to?(:has_key?) || object.respond_to?(:fetch) && value = object[part.to_i]
             object = value
           else
             return nil
           end
-        elsif  object.class.ancestors.include?(DataObject) && \
-                object.respond_to?(part_sym) && value = object.__send__(part_sym)
+        # Object that inherits H2o::DataObject
+        elsif object.class.ancestors.include?(DataObject) && \
+              object.respond_to?(part_sym) && value = object.__send__(part_sym)
           object = value
         else
           return nil

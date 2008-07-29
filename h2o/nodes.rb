@@ -49,6 +49,12 @@ module H2o
     end
     
     def render(context, stream)
+      if (@name == :'loop.parent.counter')
+        puts 'this is it man'
+        puts context.inspect
+        puts context.resolve(:'loop.parent')
+      end
+      
       variable =  context.apply_filters(context.resolve(@name), @filters)
       stream << variable
     end

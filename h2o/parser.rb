@@ -103,7 +103,7 @@ module H2o
             data.match(ArgumentLexer::STRING_RE)
             current_buffer << $1 || $2
           when :operator
-            current_buffer << {:operator => data}
+            current_buffer << {:operator => data.to_sym}
         end
       end
       result
@@ -126,7 +126,7 @@ module H2o
       /xm
     
     NUMBER_RE = /\d+(\.\d*)?/
-    OPERATOR_RE = /\s+?(>|<|=|>=|<=|!=|==|=|and|not|or)\s+?/
+    OPERATOR_RE = /(!|>|<|=|>=|<=|!=|==|=|and|not|or)/
   
     def initialize(argstring, pos = 0)
       @argument = argstring
@@ -140,7 +140,9 @@ module H2o
         next if s.scan(WHITESPACE_RE)
         
         if state == :initial
-          if match = s.scan(NAME_RE)
+          if match = s.scan(OPERATOR_RE)
+            result << [:operator, match]
+          elsif match = s.scan(NAME_RE)
             result << [:name, match]
           elsif match = s.scan(PIPE_RE)
             state = :filter
@@ -152,7 +154,7 @@ module H2o
           elsif match = s.scan(NUMBER_RE)
             result << [:number, match]
           else 
-            raise "unexpected character"
+            raise SyntaxError, "unexpected character in argument"
           end
         elsif state == :filter
           if match = s.scan(PIPE_RE)
@@ -170,7 +172,7 @@ module H2o
           elsif match = s.scan(NUMBER_RE)
             result << [:number, match]
           else 
-            raise "unexpected character"
+            raise SyntaxError, "unexpected character in argument"
           end
         end
       end

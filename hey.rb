@@ -21,19 +21,22 @@ loop do
       session.print "HTTP/1.1 200/OK\r\nContent-type: text/html\r\n\r\n"
       load 'h2o.rb'
 
-      template = H2o::Template.new('./base.html')
+      template = H2o::Template.new('./inherit.html')
       
-      session.print template.render(:page => { 
+      session.print template.render(
+      :page => { 
         :title => 'this is a title',
         :description => 'page description', 
         :body=>'page body' 
-      })
+      },
+      :links => ["http://google.com", "http://yahoo.com"]
+      )
       
       session.print "#{Time.now}\r\n"
       session.print "#{$output.join(',')}"
       
     rescue Exception => e
-      session.print "<pre>Error: " + e.message + "</pre>"
+      session.print "<pre>Error: " + e.inspect + "</pre>"
       session.print "<pre>stack: " + e.backtrace.join("\n") + "</pre>"
     end
       
