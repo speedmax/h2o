@@ -10,10 +10,12 @@ module H2o
   # Nodelist
   #
   class Nodelist < Node
-   
-    def initialize(position = 0);
+    attr_reader :parser
+    
+    def initialize(parser, position = 0)
+     @parser = parser
      @stack = []  
-    end    
+    end
     
     def render(context, stream)
       @stack.each do |node|
@@ -31,7 +33,6 @@ module H2o
   end
   
   class TextNode < Node
-    
     def initialize(content)
       @content = content
     end
@@ -49,7 +50,6 @@ module H2o
     
     def render(context, stream)
       variable =  context.apply_filters(context.resolve(@name), @filters)
-      puts variable
       stream << variable
     end
   end

@@ -10,28 +10,28 @@ class BufStdout
     end
 end
 
-$stdout = BufStdout.new
+def log(s)
+    $output << s
+end
 
 loop do
     session = server.accept
     request = session.gets
-    
     begin
       session.print "HTTP/1.1 200/OK\r\nContent-type: text/html\r\n\r\n"
       load 'h2o.rb'
-      
-      template = H2o::Template.new('./something.html')
+
+      template = H2o::Template.new('./base.html')
       
       session.print template.render(:page => { 
         :title => 'this is a title',
-        :description => 'page descriptino', 
+        :description => 'page description', 
         :body=>'page body' 
       })
       
-      session.print "<html><body><h1>#{Time.now}</h1></body></html>\r\n"
+      session.print "#{Time.now}\r\n"
+      session.print "#{$output.join(',')}"
       
-      session.print '<textarea rows="20" cols="50" >' + $output.join("\n") + '</textarea>'
-  
     rescue Exception => e
       session.print "<pre>Error: " + e.message + "</pre>"
       session.print "<pre>stack: " + e.backtrace.join("\n") + "</pre>"

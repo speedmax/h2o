@@ -1,4 +1,5 @@
 module H2o
+
   class FilterCollection 
     def self.each_filter (&block)
       instance = self.new

@@ -39,6 +39,9 @@ module H2o
           else
             return nil
           end
+        elsif  object.class.ancestors.include?(DataObject) && \
+                object.respond_to?(part_sym) && value = object.__send__(part_sym)
+          object = value
         else
           return nil
         end
@@ -69,20 +72,46 @@ module H2o
       object
     end
   end
+  
+  class DataObject
+    INTERNAL_METHOD = /^__/
+    @@required_methods = [:__send__, :__id__, :respond_to?, :extend, :methods, :class, :nil?]
     
-  class BlockContext
-    attr_reader :name
-    
-    def initialize(block, name, index)
-      @block, @name, @index = block, name, index
+    def initialize(context)
+      @context = context
+    end
+
+    def respond_to?(method)
+      method_name = method.to_s
+      return false if method_name =~ INTERNAL_METHOD
+      return false if @@required_methods.include?(method_name)
+      super
+    end
+
+    # remove all standard methods from the bucket so circumvent security
+    # problems
+    instance_methods.each do |m|
+      unless @@required_methods.include?(m.to_sym)
+        undef_method m
+      end
+    end 
+  end
+  
+  class BlockContext < DataObject
+    def initialize(block, context, stream, index)
+      @block, @context, @stream, @index = block, context, stream, index
     end
     
     def super
-      @block.render()
+      @block.render(@context, @stream, @index-1) if @block.stack_size >= @index.abs
     end
     
     def depth
-      @index+1
+      @index.abs
+    end
+    
+    def name
+      @block.name
     end
   end
 end

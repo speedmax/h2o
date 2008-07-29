@@ -6,6 +6,8 @@ module H2o
   require 'h2o/constants'
   load 'h2o/nodes.rb'
   load 'h2o/filters.rb'
+  load 'h2o/tags.rb'
+
   load 'h2o/parser.rb'
   load 'h2o/context.rb'
 
@@ -18,11 +20,22 @@ module H2o
     
     def render (context = {})
       @context = Context.new(context)
-      puts @context
       output_stream = []
       @nodelist.render(@context, output_stream)
       output_stream
-    end    
+    end
+    
+    def to_nodelist
+      @nodelist
+    end
+    
+    def self.parse source
+      
+    end
+    
+    def self.load filename
+      new(filename).to_nodelist
+    end
   end
 
 end

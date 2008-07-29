@@ -1,5 +1,8 @@
 module H2o
   class Parser 
+    attr_reader :first, :token
+    attr_accessor :storage
+    
     TAG_REGEX = /
       (.*?)(?:
         #{Regexp.escape(Constants::BLOCK_START)}    (.*?)
@@ -12,6 +15,7 @@ module H2o
     /xim
 
     def initialize (source, filename)
+      @storage = {}
       @source = source
       @filename = filename
       @tokenstream = tokenize
@@ -36,16 +40,17 @@ module H2o
       unless rest.empty?
         result << [:text, rest]
       end
-      result
+      result.reverse
     end
     
     def parse(*untils)
-      @nodelist = Nodelist.new
-      @tokenstream.each do |token|
-        token, content = token
+      nodelist = Nodelist.new(self)
+      
+      while @token = @tokenstream.pop
+        token, content = @token
         case token
           when :text :
-            @nodelist << TextNode.new(content) unless content.empty?
+            nodelist << TextNode.new(content) unless content.empty?
           when :variable :
             names = []
             filters = []
@@ -56,20 +61,25 @@ module H2o
                 names << argument
               end
             end
-            @nodelist << VariableNode.new(names.first, filters)
+            nodelist << VariableNode.new(names.first, filters)
           when :block :
-            name, *args = content.split(/\s+/, 2)
+            name, args = content.split(/\s+/, 2)
+            name = name.to_sym
             
-            if untils.include?(content)
-              return @nodelist
+            if untils.include?(name)
+              return nodelist
             end
             
+            tag = Tags[name]
+            raise "Unknow tag #{name}" if tag.nil?
+            
+            nodelist << tag.new(self, args) if tag
           when :comment :  
-            @nodelist << CommentNode.new(content)
+            nodelist << CommentNode.new(content)
         end
         @first = false
       end
-      @nodelist
+      nodelist
     end
 
     def self.parse_arguments (argument)
@@ -95,7 +105,6 @@ module H2o
           when :operator
             current_buffer << {:operator => data}
         end
-        
       end
       result
     end

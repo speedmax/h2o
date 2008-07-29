@@ -9,11 +9,24 @@
 </head>
 
 <body>
+    
+{% if page.title %}
+this is a page title
+{% else %}
+
+{% endif %}
+    
+    
+{% for something, else in links %}
+
+{% else %}
+  blank
+{% endfor %}
+
 {% block body %}
-  <h1>{{ page.title | test "ass", adsf }}</h1>
+  <h1>{{ page.title | test "", adsf }}</h1>
   <small> {{ page.description }} </small>
   <p>{{ page.body }}</p>
-
 {% endblock %}
 
 </body>
