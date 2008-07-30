@@ -1,15 +1,6 @@
 module H2o
-  
   require 'pathname'
-  require 'h2o/constants'
-  load 'h2o/errors.rb'
-  load 'h2o/nodes.rb'
-  load 'h2o/filters.rb'
-  load 'h2o/tags.rb'
 
-  load 'h2o/parser.rb'
-  load 'h2o/context.rb'
-  
   class Template
     def initialize (filename, options = {})
       @file = Pathname.new(filename)
@@ -29,12 +20,19 @@ module H2o
     end
     
     def self.parse source
-      
     end
     
     def self.load filename
       new(filename).to_nodelist
     end
   end
-
 end
+
+require 'h2o/constants'
+require 'h2o/errors'
+require 'h2o/nodes'
+require 'h2o/filters'
+require 'h2o/tags'
+require 'h2o/parser'
+require 'h2o/context'
+

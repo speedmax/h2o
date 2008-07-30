@@ -42,17 +42,19 @@ module H2o
       object = self
       path.to_s.split(/\./).each do |part|
         part_sym = part.to_sym
-        
+
         # Short cuts
-        case part_sym
-          when :first
-            return object.first
-          when :length
-            return object.length
-          when :last
-            return object.last
-          when :empty
-            return object.empty?
+        if object.is_a? Array
+          case part_sym
+            when :first
+              return object.first
+            when :length
+              return object.length
+            when :last
+              return object.last
+            when :empty
+              return object.empty?
+          end
         end
         
         # Hashes
@@ -66,8 +68,7 @@ module H2o
             return nil
           end
         # Object that inherits H2o::DataObject
-        elsif object.class.ancestors.include?(DataObject) && \
-              object.respond_to?(part_sym) && value = object.__send__(part_sym)
+        elsif object.class.ancestors.include?(DataObject) && object.respond_to?(part_sym) && value = object.__send__(part_sym)
           object = value
         else
           return nil
@@ -102,7 +103,7 @@ module H2o
   
   class DataObject
     INTERNAL_METHOD = /^__/
-    @@required_methods = [:__send__, :__id__, :respond_to?, :extend, :methods, :class, :nil?]
+    @@required_methods = [:__send__, :__id__, :respond_to?, :extend, :methods, :class, :nil?, :is_a?]
     
     def initialize(context)
       @context = context
@@ -130,7 +131,7 @@ module H2o
     end
     
     def super
-      @block.render(@context, @stream, @index-1) if @block.stack_size >= @index.abs
+      @block.render(@context, @stream, @index-1) if @block.stack_size > @index.abs
     end
     
     def depth

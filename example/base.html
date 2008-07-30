@@ -1,27 +1,27 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
 	<title>something {{ page.title | capitalize }}</title>
 </head>
-
 <body>
   
-<h3>try this loop thingy - bitches on the run  </h3>
+<h3>try this loop thingy -  on the run  </h3>
 
 <h3>Normal:</h3>
 <ul>
 {% for item in links %}
-  <li>{{ item }} </li>
+  <li>{{ item }} </li> 
 {% endfor %}
 </ul>
 
 <h3>Reverse:</h3>
 <ul>
 {% for item in links reverse %}
+
+  {{ loop.last }} {{ loop.first }} {{ loop.revcounter }} {{ loop.revcounter0 }} {{ loop.counter }} {{ loop.counter0 }}
+  {{ loop.even }} {{ loop.odd }}
   <li>{{ loop.counter }} - {{ item }} </li>
   
 {% endfor %}
@@ -34,14 +34,14 @@
   asses is a empty list
 {% endfor %}
 
-
 <h3>Nested: TODO</h3>
 
 <h3>Conditions</h3>
+
 {% if !page.title %}
   this is a page title
 {% else %}
-test - else block
+  test - else block
 {% endif %}
 
 {% block body %}

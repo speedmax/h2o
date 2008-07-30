@@ -1,0 +1,3 @@
+#!/bin/sh
+cd $PWD/example/
+ruby server.rb 888

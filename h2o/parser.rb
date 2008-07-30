@@ -10,7 +10,7 @@ module H2o
         #{Regexp.escape(Constants::VAR_START)}      (.*?)
         #{Regexp.escape(Constants::VAR_END)}            |
         #{Regexp.escape(Constants::COMMENT_START)}  (.*?)
-        #{Regexp.escape(Constants::COMMENT_END)}
+        #{Regexp.escape(Constants::COMMENT_END)}    
       )
     /xim
 
@@ -110,8 +110,9 @@ module H2o
     end
   end
   
-  require 'strscan'
   class ArgumentLexer
+    require 'strscan'
+
     WHITESPACE_RE = /\s+/m
     NAME_RE = /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*/
     PIPE_RE = /\|/
