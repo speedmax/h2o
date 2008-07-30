@@ -23,6 +23,15 @@ module H2o
       value.to_s.capitalize
     end
     
+    def escape value, attribute=false
+      value = value.to_s.gsub(/&/, '&amp;')\
+                       .gsub(/>/, '&gt;')\
+                       .gsub(/</, '&lt;')
+      value.gsub!(/"/, '&quot;') if attribute
+      value
+    end
+
+    
     def test value, arg1, arg2
       "#{value} #{arg1} #{arg2}" 
     end

@@ -12,7 +12,7 @@ module H2o
         #{Regexp.escape(Constants::COMMENT_START)}  (.*?)
         #{Regexp.escape(Constants::COMMENT_END)}
       )
-    /xim
+    /ximo
 
     def initialize (source, filename)
       @storage = {}
@@ -83,11 +83,10 @@ module H2o
     end
 
     def self.parse_arguments (argument)
-      parser = ArgumentLexer.new(argument)
       result = current_buffer = []
       filter_buffer = []
 
-      parser.lexer().each do |token|
+      ArgumentLexer.lex(argument).each do |token|
         token, data = token
         case token
           when :filter_start
@@ -113,7 +112,11 @@ module H2o
   require 'strscan'
   class ArgumentLexer
     WHITESPACE_RE = /\s+/m
-    NAME_RE = /[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*/
+    NAME_RE = /
+      [a-zA-Z_][a-zA-Z0-9_]*
+      (:?\[[^\]]+\])*
+      (:?\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*
+    /x
     PIPE_RE = /\|/
     SEPERATOR_RE = /,/
     FILTER_END_RE = /;/
@@ -126,10 +129,14 @@ module H2o
       /xm
     
     NUMBER_RE = /\d+(\.\d*)?/
-    OPERATOR_RE = /(!|>|<|=|>=|<=|!=|==|=|and|not|or)/
+    OPERATOR_RE = /(:?!|>|<|=|>=|<=|!=|==|=|and|not|or)/
   
     def initialize(argstring, pos = 0)
       @argument = argstring
+    end
+    
+    def self.lex(argstring)
+      new(argstring).lexer()
     end
     
     def lexer
@@ -154,7 +161,7 @@ module H2o
           elsif match = s.scan(NUMBER_RE)
             result << [:number, match]
           else 
-            raise SyntaxError, "unexpected character in argument"
+            raise SyntaxError, "unexpected character #{s.getch} in tag"
           end
         elsif state == :filter
           if match = s.scan(PIPE_RE)
@@ -172,7 +179,7 @@ module H2o
           elsif match = s.scan(NUMBER_RE)
             result << [:number, match]
           else 
-            raise SyntaxError, "unexpected character in argument"
+            raise SyntaxError, "unexpected character #{s.getch} in filter"
           end
         end
       end

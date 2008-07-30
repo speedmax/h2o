@@ -19,6 +19,9 @@ module H2o
         @body = parser.parse(:else, :endif)
         @else = parser.parse(:endif) if parser.token.include? 'else'
         @negated = false
+        
+        
+        argstring.split(/(and|or)/)
         @args = Parser.parse_arguments(argstring)
         
         # Negated condition
@@ -92,15 +95,16 @@ module H2o
           iteratable.each do |item|
             break if index == length
             is_even = index % 2 != 0
+            rev_count = length - index
             context[@item] = item
             context[:loop] = {
               :parent => parent,
               :first => index == 0,
               :counter => index + 1,
               :counter0 => index,
-              :revcounter => length - index,
-              :revcounter0 => length - index - 1,
-              :last => index == length - 1,
+              :revcounter => rev_count,
+              :revcounter0 => rev_count - 1,
+              :last => rev_count == 1,
               :even => is_even,
               :odd => !is_even
             }
@@ -168,7 +172,7 @@ module H2o
         @nodelist = Template.load(argstring[1...-1])
 
         blocks = (@nodelist.parser.storage[:blocks] || {})
-
+        
         (parser.storage[:blocks] || []).each do |name, tag|
           blocks[name].add_layer(tag) if blocks.include? name
         end

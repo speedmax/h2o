@@ -9,11 +9,12 @@
 </head>
 
 <body>
-  
+  {{ page['title'] }}
 <h3>try this loop thingy - bitches on the run  </h3>
 
 <h3>Normal:</h3>
 <ul>
+  {{ links.first }}
 {% for item in links %}
   <li>{{ item }} </li>
 {% endfor %}
@@ -23,6 +24,10 @@
 <ul>
 {% for item in links reverse %}
   <li>{{ loop.counter }} - {{ item }} </li>
+  
+  {% for shit in links %}
+    {{ loop.parent.counter }}
+  {% endfor %}
   
 {% endfor %}
 </ul>

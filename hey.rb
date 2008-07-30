@@ -23,21 +23,22 @@ loop do
 
       template = H2o::Template.new('./inherit.html')
       
-      session.print template.render(
-      :page => { 
-        :title => 'this is a title',
-        :description => 'page description', 
-        :body=>'page body' 
-      },
-      :links => ["http://google.com", "http://yahoo.com"]
-      )
+      session.print template.render({
+        'page' => { 
+          'title' => 'this is a title',
+          'description' => 'page description', 
+          'body' =>'page body' 
+        },
+        'links' => ["http://google.com", "http://yahoo.com"]
+      })
       
       session.print "#{Time.now}\r\n"
       session.print "#{$output.join(',')}"
       
     rescue Exception => e
-      session.print "<pre>Error: " + e.inspect + "</pre>"
-      session.print "<pre>stack: " + e.backtrace.join("\n") + "</pre>"
+      filter = H2o::Filters[:escape]
+      session.print "<pre>Error: " + filter.call(e.inspect) + "</pre>"
+      session.print "<pre><code>stack: " + H2o::Filters[:escape].call(e.backtrace.join("\n")) + "</code></pre>"
     end
       
     session.close

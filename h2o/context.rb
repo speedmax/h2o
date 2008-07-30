@@ -16,58 +16,70 @@ module H2o
     end
     
     def []=(name, value)
-      @stack[-1][name] = value
+      @stack[0][name] = value
     end
     
     def pop
-      @stack.pop if @stack.size > 1
+      @stack.shift if @stack.size > 1
     end
     
     def push(hash = {})
-      @stack << hash
+      @stack.unshift hash
     end
 
-    # def each &block
-    #   found = {}
-    #   @stack.reverse_each do |hash|
-    #     hash.each do |key, value|
-    #       next if found.include?(key)
-    #       found[key] = hash
-    #       block.call(key, value)
-    #     end
-    #   end
-    # end
-
-    def resolve(path); 
+    def resolve(name); 
+      case name
+        when 'true'
+          true
+        when 'fase'
+          false
+        when 'nil', 'null', ''
+          nil
+        when /^'(.*)'$/, /^"(.*)"$/
+          $1.to_s
+        when /(-?\d+\.\d+)/
+          $1.to_f
+        when /(-?\d+)/
+          $1.to_i
+        else
+          resolve_variable(name)
+      end
+    end
+      
+    def resolve_variable(name)
+      require 'pp'
       object = self
-      path.to_s.split(/\./).each do |part|
-        part_sym = part.to_sym
-        
+      parts = name.to_s.scan(/\[[^\]]+\]|(?:[\w\-]\??)+/)
+      
+      parts.each do |part|
+        # Support bracket
+        part = resolve($1) if part =~ /\[([^\]]+)\]/
+
         # Short cuts
-        case part_sym
+        if object.is_a? Array
+        case part.to_sym
           when :first
             return object.first
           when :length
             return object.length
           when :last
             return object.last
-          when :empty
-            return object.empty?
         end
-        
+      end
+      
         # Hashes
-        if object.respond_to?(:has_key?) && value = object[part_sym]
+        if object.respond_to?(:has_key?) && value = (object[part] || object[part.to_sym])
           object = value  
         # Array and Hash like objects
-        elsif part.match /^-?\d+$/ 
+        elsif part.is_a?(Integer) || part.match(/^-?\d+$/)
           if object.respond_to?(:has_key?) || object.respond_to?(:fetch) && value = object[part.to_i]
             object = value
           else
             return nil
-          end
+          end  
         # Object that inherits H2o::DataObject
         elsif object.class.ancestors.include?(DataObject) && \
-              object.respond_to?(part_sym) && value = object.__send__(part_sym)
+              object.respond_to?(part.to_sym) && value = object.__send__(part.to_sym)
           object = value
         else
           return nil
@@ -85,7 +97,7 @@ module H2o
         name, *args = filter
         
         filter = Filters[name] 
-        raise "Filter not found" if filter.nil?
+        raise FilterError, "Filter not found" if filter.nil?
         
         args.map! do |arg|
           if arg.kind_of? Symbol
@@ -102,7 +114,7 @@ module H2o
   
   class DataObject
     INTERNAL_METHOD = /^__/
-    @@required_methods = [:__send__, :__id__, :respond_to?, :extend, :methods, :class, :nil?]
+    @@required_methods = [:__send__, :__id__, :respond_to?, :extend, :methods, :class, :nil?, :is_a?]
     
     def initialize(context)
       @context = context
@@ -115,8 +127,7 @@ module H2o
       super
     end
 
-    # remove all standard methods from the bucket so circumvent security
-    # problems
+    # remove all standard methods for security
     instance_methods.each do |m|
       unless @@required_methods.include?(m.to_sym)
         undef_method m
@@ -130,7 +141,7 @@ module H2o
     end
     
     def super
-      @block.render(@context, @stream, @index-1) if @block.stack_size >= @index.abs
+      @block.render(@context, @stream, @index-1) if @block.stack_size > @index.abs
     end
     
     def depth
