@@ -2,6 +2,8 @@ module H2o
   require 'pathname'
 
   class Template
+    attr_reader :context
+    
     def initialize (filename, options = {})
       @file = Pathname.new(filename)
       @parser = Parser.new(@file.read, @file)

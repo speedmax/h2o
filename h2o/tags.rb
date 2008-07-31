@@ -15,8 +15,6 @@ module H2o
   end
 end
 
-# Load all tags
-
 require 'h2o/tags/if'
 require 'h2o/tags/for'
 require 'h2o/tags/block'

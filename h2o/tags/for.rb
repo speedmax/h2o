@@ -27,31 +27,27 @@ module H2o
         end
         
         if length > 0
-          index = 0
           parent = context[:loop]
-          context.push
-          
           # Main iteration
-          iteratable.each do |item|
-            break if index == length
-            is_even = index % 2 != 0
-            rev_count = length - index
-            context[@item] = item
-            context[:loop] = {
-              :parent => parent,
-              :first => index == 0,
-              :counter => index + 1,
-              :counter0 => index,
-              :revcounter => rev_count,
-              :revcounter0 => rev_count - 1,
-              :last => rev_count  == 1,
-              :even => is_even,
-              :odd => !is_even
-            }
-            @body.render(context, stream)
-            index += 1
+          context.stack do
+            iteratable.each_with_index do |item, index|
+              is_even = index % 2 != 0
+              rev_count = length - index
+              context[@item] = item
+              context[:loop] = {
+                :parent => parent,
+                :first => index == 0,
+                :counter => index + 1,
+                :counter0 => index,
+                :revcounter => rev_count,
+                :revcounter0 => rev_count - 1,
+                :last => rev_count  == 1,
+                :even => is_even,
+                :odd => !is_even
+              }
+              @body.render(context, stream)
+            end
           end
-          context.pop
         else
           # Else statement
           @else.render(context, stream) if @else

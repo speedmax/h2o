@@ -1,7 +1,16 @@
 module H2o
   class Context
+    Pattern = {
+      :string => /^["'](.*?[^\\]|.*?)["']$/,
+      :float => /(-?\d+\.\d+)/,
+      :integer => /^-?\d+$/,
+      :bracket => /\[([^\]]+)\]/,
+      :name => /\[[^\]]+\]|(?:[\w\-]\??)+/,
+    }
+    
     #include Enumerable
     def initialize(context ={})
+      @@count = 0
       @stack = [context]
     end
   
@@ -16,60 +25,75 @@ module H2o
     end
     
     def []=(name, value)
-      @stack[-1][name] = value
+      @stack[0][name] = value
     end
     
     def pop
-      @stack.pop if @stack.size > 1
+      @stack.shift if @stack.size > 1
     end
     
     def push(hash = {})
-      @stack << hash
+      @stack.unshift hash
+    end
+    
+    def stack
+      result = nil
+      push
+      begin
+        result = yield
+      ensure
+        pop
+      end
+      result
     end
 
-    # def each &block
-    #   found = {}
-    #   @stack.reverse_each do |hash|
-    #     hash.each do |key, value|
-    #       next if found.include?(key)
-    #       found[key] = hash
-    #       block.call(key, value)
-    #     end
-    #   end
-    # end
+    def resolve(name); 
+      @@count += 1
+      case name
+        when nil, 'nil', ''
+          nil
+#        when 'true'
+#          true
+#        when 'fase'
+#          false
+        when /^['"](.*)['"]$/,
+          $1.to_s
+        when /^-?\d+\.\d+$/
+          name.to_f
+        when /^-?\d+$/
+          name.to_i
+        else
+          resolve_variable(name)
+      end
+    end
 
-    def resolve(path); 
+    def resolve_variable(name)
       object = self
-      path.to_s.split(/\./).each do |part|
+      parts = name.to_s.scan(/\[[^\]]+\]|(?:[\w\-]\??)+/)
+      #parts = name.to_s.split(/\./)
+      part_sym = nil
+      
+      parts.each do |part|
+        # Support bracket
+        part = resolve($1) if part =~ /\[([^\]]+)\]/
         part_sym = part.to_sym
-
-        # Short cuts
-        if object.is_a? Array
-          case part_sym
-            when :first
-              return object.first
-            when :length
-              return object.length
-            when :last
-              return object.last
-            when :empty
-              return object.empty?
-          end
-        end
-        
         # Hashes
-        if object.respond_to?(:has_key?) && value = object[part_sym]
+        if object.respond_to?(:has_key?) && value = (object[part] || object[part_sym])
           object = value  
         # Array and Hash like objects
-        elsif part.match /^-?\d+$/ 
+        elsif part.is_a?(Integer) || part.match(/^-?\d+$/)
           if object.respond_to?(:has_key?) || object.respond_to?(:fetch) && value = object[part.to_i]
             object = value
           else
             return nil
           end
-        # Object that inherits H2o::DataObject
-        elsif object.class.ancestors.include?(DataObject) && object.respond_to?(part_sym) && value = object.__send__(part_sym)
+        # H2o::DataObject Type
+        elsif object.is_a?(DataObject) && \
+              object.respond_to?(part_sym) && value = object.__send__(part_sym)
           object = value
+        elsif object.respond_to?(part_sym) && [:first, :length, :size, :last].include?(part_sym) 
+          object = object.__send__(part_sym)
+        # May be Proc object next?
         else
           return nil
         end
@@ -86,7 +110,7 @@ module H2o
         name, *args = filter
         
         filter = Filters[name] 
-        raise "Filter not found" if filter.nil?
+        raise FilterError, "Filter not found" if filter.nil?
         
         args.map! do |arg|
           if arg.kind_of? Symbol
@@ -98,6 +122,10 @@ module H2o
         object = filter.call(object, *args)
       end
       object
+    end
+    
+    def count
+      @@count
     end
   end
   
@@ -116,8 +144,7 @@ module H2o
       super
     end
 
-    # remove all standard methods from the bucket so circumvent security
-    # problems
+    # remove all standard methods for security
     instance_methods.each do |m|
       unless @@required_methods.include?(m.to_sym)
         undef_method m

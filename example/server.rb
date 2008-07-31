@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
+require 'rubygems'
 require 'socket'
-require 'benchmark'
+require 'ruby-prof'
 
 port = (ARGV[0] || 80).to_i
 server = TCPServer.new('localhost', port)
@@ -39,24 +40,40 @@ while session = server.accept
     begin
       template = output = nil
       
-      Benchmark.bm do |b|
-        b.report 'Load and parse the template' do
-          100.times { template = H2o::Template.new('inherit.html') }
-        end
-        
-        b.report 'Rendering the template against the context' do
-          100.times {
-            output = template.render(context)
-          }
-          s.print output
-        end
-      end    
+
+      10.times { template = H2o::Template.new('inherit.html') }
+
+      RubyProf.start
+        output = template.render(context)
+      result = RubyProf.stop
+      
+      
+      s.print output
+      puts template.context.count
+      
+      
+      # Print a graph profile to text
+      printer = RubyProf::GraphHtmlPrinter.new(result)
+      File.open('request.html', 'w') do |file|
+        printer.print(file, {:min_percent => 1,
+                           :print_file => true})
+      end
+      
+      printer = RubyProf::CallTreePrinter.new(result)
+      File.open('cachegrind.out.1', 'w') do |file|
+        printer.print(file, {:min_percent => 1,
+                             :print_file => true})
+      end
+
+
       s.print "#{Time.now}\r\n"
       s.print "#{$output.join(',')}"
       
     rescue Exception => e
-      s.print "<pre>Error: " + e.inspect + "</pre>"
-      s.print "<pre>stack: " + e.backtrace.join("\n") + "</pre>"
+      filter = H2o::Filters[:escape]
+      s.print "<pre>Error: " + filter,call(e.inspect) + "</pre>"
+      s.print "<pre>stack: " + filter.call(e.backtrace.join("\n")) + "</pre>"
+      puts e
     ensure
       s.close
       $output = []
