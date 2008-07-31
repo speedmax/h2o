@@ -55,14 +55,14 @@ Server.start address do |s|
   require 'h2o'
   template = H2o::Template.new('inherit.html')
   
-  Benchmark.bm do|b|
-    b.report do
-        s.print template.render(context)
-    end
-  end
-  
-  # profile :memory do
-  #   s.print template.render(context)
+  # Benchmark.bm do|b|
+  #   b.report do
+  #       s.print template.render(context)
+  #   end
   # end
+  
+  profile :memory do
+    s.print template.render(context)
+  end
 end
 

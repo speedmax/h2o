@@ -84,13 +84,13 @@ module H2o
           unless value.is_a?(Proc)
             object = value
           else
-          #Proc object with extra save net
-          begin
-            object = value.call
-          rescue
-            return nil
+            # Proc object with extra save net
+            begin
+              object = value.call
+            rescue
+              return nil
+            end
           end
-        end
 
         # Array and Hash like objects
         elsif part.is_a?(Integer) || part.match(/^-?\d+$/)
