@@ -1,5 +1,5 @@
 
-module H2o::Constants
+module H2o
   BLOCK_START = '{%'
   BLOCK_END = '%}'
   VAR_START = '{{'

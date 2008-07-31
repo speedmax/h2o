@@ -13,7 +13,7 @@ module H2o
       @@count = 0
       @stack = [context]
     end
-  
+
     # doing a reverse lookup
     # FIXME: need to double check this, also changed Block#add_layer in reverse order
     def [](name); 
@@ -48,14 +48,15 @@ module H2o
     end
 
     def resolve(name); 
-      @@count += 1
       case name
+        when Symbol
+          resolve_variable(name)
         when nil, 'nil', ''
           nil
-#        when 'true'
-#          true
-#        when 'fase'
-#          false
+        when 'true'
+          true
+        when 'fase'
+          false
         when /^['"](.*)['"]$/,
           $1.to_s
         when /^-?\d+\.\d+$/
@@ -69,17 +70,28 @@ module H2o
 
     def resolve_variable(name)
       object = self
-      parts = name.to_s.scan(/\[[^\]]+\]|(?:[\w\-]\??)+/)
-      #parts = name.to_s.split(/\./)
+      # parts = name.to_s.scan(/\[[^\]]+\]|(?:[\w\-]\??)+/)
+      parts = name.to_s.split(/\./)
       part_sym = nil
       
       parts.each do |part|
         # Support bracket
-        part = resolve($1) if part =~ /\[([^\]]+)\]/
+        #part = resolve($1) if part =~ /\[([^\]]+)\]/
         part_sym = part.to_sym
+        
         # Hashes
-        if object.respond_to?(:has_key?) && value = (object[part] || object[part_sym])
-          object = value  
+        if object.respond_to?(:has_key?) && value = (object[part_sym] || object[part] )
+          unless value.is_a?(Proc)
+            object = value
+          else
+          #Proc object with extra save net
+          begin
+            object = value.call
+          rescue
+            return nil
+          end
+        end
+
         # Array and Hash like objects
         elsif part.is_a?(Integer) || part.match(/^-?\d+$/)
           if object.respond_to?(:has_key?) || object.respond_to?(:fetch) && value = object[part.to_i]
@@ -87,13 +99,15 @@ module H2o
           else
             return nil
           end
+        
         # H2o::DataObject Type
         elsif object.is_a?(DataObject) && \
               object.respond_to?(part_sym) && value = object.__send__(part_sym)
           object = value
+        
+        # Sweet array shortcuts
         elsif object.respond_to?(part_sym) && [:first, :length, :size, :last].include?(part_sym) 
           object = object.__send__(part_sym)
-        # May be Proc object next?
         else
           return nil
         end

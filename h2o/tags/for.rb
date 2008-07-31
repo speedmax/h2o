@@ -45,6 +45,7 @@ module H2o
                 :even => is_even,
                 :odd => !is_even
               }
+
               @body.render(context, stream)
             end
           end

@@ -1,1 +1,1 @@
-ruby ./server.rb 888
+ruby ./run.rb 888

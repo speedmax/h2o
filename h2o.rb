@@ -1,6 +1,17 @@
 module H2o
   require 'pathname'
 
+  class Stream < Array
+    
+    def << (item)
+      unshift item.to_s
+    end
+    
+    def close
+      reverse!
+    end
+  end
+
   class Template
     attr_reader :context
     

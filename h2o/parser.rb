@@ -5,12 +5,12 @@ module H2o
     
     TAG_REGEX = /
       (.*?)(?:
-        #{Regexp.escape(Constants::BLOCK_START)}    (.*?)
-        #{Regexp.escape(Constants::BLOCK_END)}          |
-        #{Regexp.escape(Constants::VAR_START)}      (.*?)
-        #{Regexp.escape(Constants::VAR_END)}            |
-        #{Regexp.escape(Constants::COMMENT_START)}  (.*?)
-        #{Regexp.escape(Constants::COMMENT_END)}    
+        #{Regexp.escape(BLOCK_START)}    (.*?)
+        #{Regexp.escape(BLOCK_END)}          |
+        #{Regexp.escape(VAR_START)}      (.*?)
+        #{Regexp.escape(VAR_END)}            |
+        #{Regexp.escape(COMMENT_START)}  (.*?)
+        #{Regexp.escape(COMMENT_END)}    
       )
     /ximo
 
@@ -119,7 +119,6 @@ module H2o
     WHITESPACE_RE = /\s+/m
     NAME_RE = /
       [a-zA-Z_][a-zA-Z0-9_]*
-      (:?\[[^\]]+\])*
       (:?\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*
     /x
     PIPE_RE = /\|/
