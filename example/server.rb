@@ -27,6 +27,7 @@ class Server
           s.print "<pre>Error: #{(e.inspect)}</pre>"
           s.print "<pre>stack: #{e.backtrace.join("\n")}</pre>"
         ensure
+          s.print "\r\n"
           s.close
         end
       end

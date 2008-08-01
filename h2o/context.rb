@@ -74,6 +74,8 @@ module H2o
       parts = name.to_s.split(/\./)
       part_sym = nil
       
+      # Main loopup loop
+      #
       parts.each do |part|
         # Support bracket
         #part = resolve($1) if part =~ /\[([^\]]+)\]/
@@ -84,7 +86,7 @@ module H2o
           unless value.is_a?(Proc)
             object = value
           else
-            # Proc object with extra save net
+            # Proc object with extra caution
             begin
               object = value.call
             rescue

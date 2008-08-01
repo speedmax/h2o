@@ -10,9 +10,9 @@ module H2o
         #{Regexp.escape(VAR_START)}      (.*?)
         #{Regexp.escape(VAR_END)}            |
         #{Regexp.escape(COMMENT_START)}  (.*?)
-        #{Regexp.escape(COMMENT_END)}    
+        #{Regexp.escape(COMMENT_END)}
       )
-    /ximo
+    /xim
 
     def initialize (source, filename)
       @storage = {}

@@ -26,11 +26,12 @@ def profile mode
   end
   
   # Print a graph profile to text
+  
   printer = RubyProf::FlatPrinter.new(result)
   File.open('request.html', 'w') do |file|
     printer.print(STDOUT, {:min_percent => 1, :print_file => true})
   end
-
+  
   printer = RubyProf::CallTreePrinter.new(result)
   File.open('cachegrind.out.1', 'w') do |file|
     printer.print(file, {:min_percent => 1, :print_file => true})
@@ -55,14 +56,14 @@ Server.start address do |s|
   require 'h2o'
   template = H2o::Template.new('inherit.html')
   
-  # Benchmark.bm do|b|
-  #   b.report do
-  #       s.print template.render(context)
-  #   end
-  # end
-  
-  profile :memory do
-    s.print template.render(context)
+  Benchmark.bm do|b|
+    b.report do
+      s.print template.render(context)
+    end
   end
+#  
+#  profile :memory do
+#    s.print template.render(context)
+#  end
 end
 
