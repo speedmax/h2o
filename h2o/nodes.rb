@@ -36,7 +36,7 @@ module H2o
     def initialize(content)
       @content = content
     end
-    
+
     def render(context, stream)
       stream << @content
     end
@@ -45,11 +45,16 @@ module H2o
   class VariableNode < Node
     def initialize (name, filters)
       @name = name
-      @filters = filters
+      @filters = filters.empty? ? nil : filters
     end
     
     def render(context, stream)
-      variable =  context.apply_filters(context.resolve(@name), @filters)
+      variable = context.resolve(@name)
+      variable = context.apply_filters(variable, @filters) if @filters
+      # variable = variable.to_s.gsub(/&/, '&amp;')\
+      #                         .gsub(/>/, '&gt;')\
+      #                         .gsub(/</, '&lt;')
+      
       stream << variable
     end
   end

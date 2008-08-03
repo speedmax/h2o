@@ -39,10 +39,12 @@ module H2o
         end
         # parser the entire subtemplate
         parser.parse()
-        
+
         # load the parent template into nodelist
-        @nodelist = Template.load(argstring[1...-1])
-        blocks = (@nodelist.parser.storage[:blocks] || {})
+        @nodelist = Template.load(argstring[1...-1], parser.env)
+        
+        blocks = @nodelist.parser.storage[:blocks] || {}
+        
         (parser.storage[:blocks] || []).each do |name, tag|
           blocks[name].add_layer(tag) if blocks.include? name
         end
@@ -51,6 +53,7 @@ module H2o
       def render context, stream
        @nodelist.render(context, stream)
       end
+      
       Tags.register(self, :extends)
     end
   end

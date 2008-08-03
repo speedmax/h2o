@@ -10,13 +10,12 @@ module H2o
     
     #include Enumerable
     def initialize(context ={})
-      @@count = 0
       @stack = [context]
     end
 
     # doing a reverse lookup
     # FIXME: need to double check this, also changed Block#add_layer in reverse order
-    def [](name); 
+    def [](name)
       @stack.each do |layer|
         value = layer[name]
         return value unless value.nil?
@@ -74,11 +73,12 @@ module H2o
       parts = name.to_s.split(/\./)
       part_sym = nil
       
+      
       parts.each do |part|
         # Support bracket
         #part = resolve($1) if part =~ /\[([^\]]+)\]/
         part_sym = part.to_sym
-        
+
         # Hashes
         if object.respond_to?(:has_key?) && value = (object[part_sym] || object[part] )
           unless value.is_a?(Proc)
@@ -93,7 +93,7 @@ module H2o
           end
 
         # Array and Hash like objects
-        elsif part.is_a?(Integer) || part.match(/^-?\d+$/)
+        elsif part.match(/^-?\d+$/)
           if object.respond_to?(:has_key?) || object.respond_to?(:fetch) && value = object[part.to_i]
             object = value
           else
@@ -117,6 +117,7 @@ module H2o
     
     def has_key?(key)
       !send(:[], key).nil?
+
     end
     
     def apply_filters(object, filters);
@@ -137,10 +138,7 @@ module H2o
       end
       object
     end
-    
-    def count
-      @@count
-    end
+
   end
   
   class DataObject

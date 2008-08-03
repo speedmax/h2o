@@ -15,10 +15,11 @@ module H2o
   class Template
     attr_reader :context
     
-    def initialize (filename, options = {})
+    def initialize (filename, env = {})
       @file = Pathname.new(filename)
-      @parser = Parser.new(@file.read, @file)
-      @nodelist = @parser.parse
+      env[:search_path] = @file.dirname
+      
+      @nodelist = Template.load(@file, env)
     end
     
     def render (context = {})
@@ -27,16 +28,16 @@ module H2o
       @nodelist.render(@context, output_stream)
       output_stream
     end
-    
-    def to_nodelist
-      @nodelist
-    end
-    
+
     def self.parse source
+      parser = Parser.new(source, file, env)
+      parser.parse
     end
     
-    def self.load filename
-      new(filename).to_nodelist
+    def self.load file, env
+      file = env[:search_path] + file if file.is_a? String
+      parser = Parser.new(file.read, file, env)
+      parser.parse
     end
   end
 end

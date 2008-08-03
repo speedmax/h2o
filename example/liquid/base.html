@@ -23,22 +23,20 @@
 <ul>
 {% for item in links reverse %}
 
-  {{ loop.last }} {{ loop.first }} {{ loop.revcounter }} {{ loop.revcounter0 }} {{ loop.counter }} {{ loop.counter0 }}
-  {{ loop.even }} {{ loop.odd }}
-  <li>{{ loop.counter }} - {{ item }} </li>
   
-  {% for shit in links %}
-    {{ loop.parent.counter }}
-  {% endfor %}
+  <li {% if loop.even %}style="background:green"{% endif %}>
+    {{ forloop.last }} {{ forloop.index }} - {{ item }}
   
+    {% for shit in links %}
+      {{ forloop.index }}
+    {% endfor %}
+  </li>
 {% endfor %}
 </ul>
 
 <h3>Empty:</h3>
 {% for ass in asses %}
   {{ ass }}
-{% else %}
-  asses is a empty list
 {% endfor %}
 
 <h3>Nested: TODO</h3>
@@ -51,11 +49,9 @@
   test - else block
 {% endif %}
 
-{% block body %}
   <h1>{{ page.title | test "", adsf }}</h1>
   <small> {{ page.description }} </small>
   <p>{{ page.body }}</p>
-{% endblock %}
 
 </body>
 </html>

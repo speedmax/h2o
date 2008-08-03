@@ -1,6 +1,6 @@
 module H2o
   class Parser 
-    attr_reader :token
+    attr_reader :token, :env
     attr_accessor :storage
     
     TAG_REGEX = /
@@ -14,7 +14,8 @@ module H2o
       )
     /ximo
 
-    def initialize (source, filename)
+    def initialize (source, filename, env = {})
+      @env = env
       @storage = {}
       @source = source
       @filename = filename
