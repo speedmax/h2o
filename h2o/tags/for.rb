@@ -37,15 +37,14 @@ module H2o
               context[:loop] = {
                 :parent => parent,
                 :first => index == 0,
+                :last => rev_count == 1,
                 :counter => index + 1,
                 :counter0 => index,
                 :revcounter => rev_count,
                 :revcounter0 => rev_count - 1,
-                :last => rev_count  == 1,
                 :even => is_even,
                 :odd => !is_even
               }
-
               @body.render(context, stream)
             end
           end

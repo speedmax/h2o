@@ -1,6 +1,6 @@
 module H2o
   class Parser 
-    attr_reader :token
+    attr_reader :token, :env
     attr_accessor :storage
     
     TAG_REGEX = /
@@ -14,7 +14,8 @@ module H2o
       )
     /xim
 
-    def initialize (source, filename)
+    def initialize (source, filename, env = {})
+      @env = env
       @storage = {}
       @source = source
       @filename = filename
@@ -103,7 +104,7 @@ module H2o
           when :number
             current_buffer << (data.include?('.') ? data.to_f : data.to_i)
           when :string
-            data.match(ArgumentLexer::STRING_RE)
+            data.match(STRING_RE)
             current_buffer << $1 || $2
           when :operator
             current_buffer << {:operator => data.to_sym}
@@ -111,30 +112,15 @@ module H2o
       end
       result
     end
+    
+    def pretty_print pp
+      nil
+    end
   end
   
   class ArgumentLexer
     require 'strscan'
 
-    WHITESPACE_RE = /\s+/m
-    NAME_RE = /
-      [a-zA-Z_][a-zA-Z0-9_]*
-      (:?\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*
-    /x
-    PIPE_RE = /\|/
-    SEPERATOR_RE = /,/
-    FILTER_END_RE = /;/
-    STRING_RE = /
-      (?:
-        "([^"\\]*(?:\\.[^"\\]*)*)"
-        |
-        '([^'\\]*(?:\\.[^'\\]*)*)'
-      )
-      /xm
-    
-    NUMBER_RE = /\d+(\.\d*)?/
-    OPERATOR_RE = /(:?!|>|<|=|>=|<=|!=|==|=|and|not|or)/
-  
     def initialize(argstring, pos = 0)
       @argument = argstring
     end
