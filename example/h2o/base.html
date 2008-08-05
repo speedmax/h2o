@@ -6,7 +6,13 @@
 	<title>something {{ page.title | capitalize }}</title>
 </head>
 <body>
+{{ links.length }}
 
+{% if page.title == "this is a title" %}
+haha
+{% else %}
+ohoh
+{% endif %}
 
 {{ callable }}
 

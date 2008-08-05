@@ -18,7 +18,6 @@ module H2o
     def initialize (filename, env = {})
       @file = Pathname.new(filename)
       env[:search_path] = @file.dirname
-      
       @nodelist = Template.load(@file, env)
     end
     
@@ -29,7 +28,7 @@ module H2o
       output_stream
     end
 
-    def self.parse source
+    def self.parse source, env
       parser = Parser.new(source, file, env)
       parser.parse
     end

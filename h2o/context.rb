@@ -24,7 +24,7 @@ module H2o
     end
     
     def []=(name, value)
-      @stack[0][name] = value
+      @stack.first[name] = value
     end
     
     def pop
@@ -48,15 +48,15 @@ module H2o
 
     def resolve(name); 
       case name
+        when 'nil', ''
+          nil
+        when :true
+          true
+        when :fase
+          false
         when Symbol
           resolve_variable(name)
-        when nil, 'nil', ''
-          nil
-        when 'true'
-          true
-        when 'fase'
-          false
-        when /^['"](.*)['"]$/,
+        when /^['"](.*)['"]$/
           $1.to_s
         when /^-?\d+\.\d+$/
           name.to_f

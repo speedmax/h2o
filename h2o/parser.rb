@@ -3,7 +3,7 @@ module H2o
     attr_reader :token, :env
     attr_accessor :storage
     
-    TAG_REGEX = /
+    ParseRegex = /
       (.*?)(?:
         #{Regexp.escape(BLOCK_START)}    (.*?)
         #{Regexp.escape(BLOCK_END)}          |
@@ -11,7 +11,7 @@ module H2o
         #{Regexp.escape(VAR_END)}            |
         #{Regexp.escape(COMMENT_START)}  (.*?)
         #{Regexp.escape(COMMENT_END)}
-      )
+      ) (?:\r?\n)?
     /xim
 
     def initialize (source, filename, env = {})
@@ -25,7 +25,7 @@ module H2o
 
     def tokenize
       result = []
-      @source.scan(TAG_REGEX).each do |match|
+      @source.scan(ParseRegex).each do |match|
         result << [:text, match[0]] if match[0] and !match[0].empty?
         
         if data = match[1]
@@ -107,6 +107,8 @@ module H2o
             data.match(STRING_RE)
             current_buffer << $1 || $2
           when :operator
+            # replace exclaimation mark '!' into not
+            data = 'not' if data == '!'
             current_buffer << {:operator => data.to_sym}
         end
       end

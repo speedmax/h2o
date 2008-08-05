@@ -78,20 +78,20 @@ Server.start address do |s|
   # liquid  = Liquid::Template.parse(Pathname.new('liquid/base.html').read)
   # erb = ErbTemplate.new('erb/base.html')
   # 
-  # Benchmark.bm do|b|
-  #   
-  #     s.print 'h2o rendering result<hr>'
-  #     b.report('H2o time :') { s.print h2o.render(context) }
-  #   
-  #     s.print 'liquid rendering result<hr>'
-  #     b.report("Liquid time :") { s.print liquid.render(context) }
-  #     
-  #     s.print 'erb rendering result<hr>'
-  #     b.report("erb time :") { s.print erb.render(context) }
-  # end
+   Benchmark.bm do|b|
+     
+       s.print 'h2o rendering result<hr>'
+       b.report('H2o time :') { s.print h2o.render(context) }
+#     
+#       s.print 'liquid rendering result<hr>'
+#       b.report("Liquid time :") { s.print liquid.render(context) }
+#       
+#       s.print 'erb rendering result<hr>'
+#       b.report("erb time :") { s.print erb.render(context) }
+   end
 
-    profile :memory do
-      s.print h2o.render(context)
-    end
+#    profile :memory do
+#      s.print h2o.render(context)
+#    end
 end
 

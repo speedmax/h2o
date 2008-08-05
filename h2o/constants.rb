@@ -8,7 +8,6 @@ module H2o
   COMMENT_END = '*}'
   
   
-  
   NAME_RE = /
     [a-zA-Z_][a-zA-Z0-9_]*
     (?:\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*
@@ -28,5 +27,5 @@ module H2o
     /xm
   
   NUMBER_RE = /\d+(\.\d*)?/
-  OPERATOR_RE = /(?:!|>|<|=|>=|<=|!=|==|=|and|not|or)/
+  OPERATOR_RE = /(?:>=|<=|!=|==|>|<|!|and|not|or)/
 end
