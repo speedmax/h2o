@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date     = "2008-09-5"
   s.summary  = "Django inspired template markup"
   s.email    = "taylor.luk@idealian.net"
-  s.homepage = "http://github.com/speedmax/h2o-ruby"
+  s.homepage = "http://github.com/speedmax/h2o"
   s.description = "h2o is a django inspired template that offers natural template syntax and easy to integrate."
   s.has_rdoc = true
   s.authors  = ["Taylor Luk"]
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 		"lib/h2o/context.rb", 
 		"lib/h2o/datatype.rb", 
 		"lib/h2o/errors.rb", 
-		"lib/h2o/filters", 
+		"lib/h2o/filters.rb", 
 		"lib/h2o/nodes.rb", 
 		"lib/h2o/parser.rb", 
 		"lib/h2o/tags.rb", 
