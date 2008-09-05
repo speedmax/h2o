@@ -5,7 +5,7 @@ require 'benchmark'
 # Hack require to force reload
 alias :old_require :require
 def require file
-  begin; load(File.dirname(__FILE__) + "/../#{file}.rb");rescue Exception => e;old_require(file);end
+  begin; load(File.dirname(__FILE__) + "/../lib/#{file}.rb");rescue Exception => e;old_require(file);end
 end
 
 def profile mode
@@ -80,7 +80,6 @@ Server.start address do |s|
   # 
    Benchmark.bm do|b|
      
-       s.print 'h2o rendering result<hr>'
        b.report('H2o time :') { s.print h2o.render(context) }
 #     
 #       s.print 'liquid rendering result<hr>'
