@@ -4,7 +4,8 @@ module H2o
     #
     class Block < Tag
       attr_reader :name
-      @name
+      attr_accessor :parent
+
       def initialize parser, argstring
         @name = argstring.to_sym
         @stack = [ parser.parse(:endblock) ]
@@ -45,8 +46,11 @@ module H2o
         
         blocks = @nodelist.parser.storage[:blocks] || {}
         
-        (parser.storage[:blocks] || []).each do |name, tag|
-          blocks[name].add_layer(tag) if blocks.include? name
+        (parser.storage[:blocks] || []).each do |name, block|
+          if blocks.include? name
+            blocks[name].add_layer(block)
+            block.parent =  blocks[name]
+          end
         end
       end
 

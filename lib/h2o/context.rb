@@ -169,7 +169,8 @@ module H2o
     end
     
     def super
-      @block.render(@context, @stream, @index-1) if @block.stack_size > @index.abs
+      @block.parent.render(@context, @stream, @index-1) if @block.parent.stack_size > @index.abs
+      nil
     end
     
     def depth

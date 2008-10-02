@@ -74,7 +74,7 @@ Server.start address do |s|
   require 'h2o'
 
 
-  h2o = H2o::Template.new('h2o/inherit.html')
+  h2o = H2o::Template.new('h2o/index.html')
   # liquid  = Liquid::Template.parse(Pathname.new('liquid/base.html').read)
   # erb = ErbTemplate.new('erb/base.html')
   # 

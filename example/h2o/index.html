@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+
+
+
+{% block title %}{{ block.super }} - child page{% endblock %}
+
+{% block body %}
+  {{ block.super }}
+  extended body
+{% endblock %}
