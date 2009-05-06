@@ -142,7 +142,7 @@ module H2o
   
   class DataObject
     INTERNAL_METHOD = /^__/
-    @@required_methods = [:__send__, :__id__, :respond_to?, :extend, :methods, :class, :nil?, :is_a?]
+    @@required_methods = [:__send__, :__id__, :object_id, :respond_to?, :extend, :methods, :class, :nil?, :is_a?]
     
     def initialize(context)
       @context = context

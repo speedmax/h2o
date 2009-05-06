@@ -54,9 +54,9 @@ module H2o
       while @token = @tokenstream.pop
         token, content = @token
         case token
-          when :text :
+          when :text
             nodelist << TextNode.new(content) unless content.empty?
-          when :variable :
+          when :variable
             names = []
             filters = []
             Parser.parse_arguments(content).each do |argument|
@@ -67,7 +67,7 @@ module H2o
               end
             end
             nodelist << VariableNode.new(names.first, filters)
-          when :block :
+          when :block
             name, args = content.split(/\s+/, 2)
             name = name.to_sym
             
@@ -79,7 +79,7 @@ module H2o
             raise "Unknow tag #{name}" if tag.nil?
             
             nodelist << tag.new(self, args) if tag
-          when :comment :  
+          when :comment
             nodelist << CommentNode.new(content)
         end
         @first = false
@@ -99,13 +99,21 @@ module H2o
           when :filter_end
             result << filter_buffer.dup unless filter_buffer.empty?
             current_buffer = result
+          when :boolean
+            current_buffer << (data == 'true'? true : false)
           when :name
             current_buffer << data.to_sym
           when :number
             current_buffer << (data.include?('.') ? data.to_f : data.to_i)
           when :string
             data.match(STRING_RE)
-            current_buffer << $1 || $2
+            current_buffer << ($1 || $2)
+          when :named_argument
+            current_buffer << {} unless current_buffer.last.is_a?(Hash)
+            
+            named_args = current_buffer.last
+            name, value = data.split(':').map{|m| m.strip}
+            named_args[name.to_sym] = parse_arguments(value).first
           when :operator
             # replace exclaimation mark '!' into not
             data = 'not' if data == '!'
@@ -141,6 +149,10 @@ module H2o
         if state == :initial
           if match = s.scan(OPERATOR_RE)
             result << [:operator, match]
+          elsif match = s.scan(BOOLEAN_RE)
+            result << [:boolean, match]
+          elsif match = s.scan(NAMED_ARGS_RE)
+            result << [:named_argument, match]
           elsif match = s.scan(NAME_RE)
             result << [:name, match]
           elsif match = s.scan(PIPE_RE)
@@ -164,6 +176,10 @@ module H2o
           elsif match = s.scan(FILTER_END_RE)
             result << [:filter_end, nil]
             state = :initial
+          elsif match = s.scan(BOOLEAN_RE)
+            result << [:boolean, match]
+          elsif match = s.scan(NAMED_ARGS_RE)
+            result << [:named_argument, match]
           elsif match = s.scan(NAME_RE)
             result << [:name, match]
           elsif match = s.scan(STRING_RE)
