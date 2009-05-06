@@ -25,7 +25,7 @@ module H2o
       @context = Context.new(context)
       output_stream = []
       @nodelist.render(@context, output_stream)
-      output_stream
+      output_stream.join
     end
 
     def self.parse source, env
