@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name     = "h2o"
-  s.version  = "0.1"
+  s.version  = "0.2"
   s.date     = "2008-09-5"
   s.summary  = "Django inspired template markup"
   s.email    = "taylor.luk@idealian.net"
@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.description = "h2o is a django inspired template that offers natural template syntax and easy to integrate."
   s.has_rdoc = true
   s.authors  = ["Taylor Luk"]
-  s.files    = ["README", 
+  s.files    = ["README.md", 
 		"h2o.gemspec", 
 		"lib/h2o.rb", 
 		"lib/h2o/", 
