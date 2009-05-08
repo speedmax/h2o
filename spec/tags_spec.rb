@@ -19,10 +19,20 @@ describe "For tags" do
   it "should iterate through a hash object" do
     context = {:person => {:name => 'taylor', :age => 19}}
     r = parse("{%for a in person%}{{ a }}{% endfor %}").render(context)
-    r.should == '19taylor'
+    
+    if RUBY_VERSION.match("1.8")
+      r.should == '19taylor' 
+    else
+      r.should == 'taylor19'
+    end
     
     r = parse("{%for a, b in person %}{{ a }}{{ b }}{% endfor %}").render(context)
-    r.should == 'age19nametaylor'
+    
+    if RUBY_VERSION.match("1.8")
+      r.should == 'age19nametaylor'
+    else
+      r.should == 'nametaylorage19'
+    end
   end
 
 end
