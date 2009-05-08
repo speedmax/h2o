@@ -39,6 +39,7 @@ module H2o
                 key, value = keyvalue
               else
                 value, index = args
+                key = index
               end
               
               is_even = index % 2 != 0
