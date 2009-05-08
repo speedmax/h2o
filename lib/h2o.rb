@@ -28,18 +28,20 @@ module H2o
       output_stream.join
     end
 
-    def self.parse source, env
-      parser = Parser.new(source, file, env)
-      parser.parse
+    def self.parse source, env = {}
+      parser = Parser.new(source, false, env)
+      parsed = parser.parse
     end
     
-    def self.load file, env
+    def self.load file, env = {}
       file = env[:search_path] + file if file.is_a? String
       parser = Parser.new(file.read, file, env)
       parser.parse
     end
   end
 end
+
+require File.dirname(__FILE__) + '/core_ext/object'
 
 require File.dirname(__FILE__) + '/h2o/constants'
 require File.dirname(__FILE__) + '/h2o/errors'
@@ -49,4 +51,4 @@ require File.dirname(__FILE__) + '/h2o/tags'
 require File.dirname(__FILE__) + '/h2o/parser'
 require File.dirname(__FILE__) + '/h2o/context'
 
-require File.dirname(__FILE__) + '/core_ext/object'
+

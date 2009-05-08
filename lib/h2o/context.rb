@@ -119,7 +119,7 @@ module H2o
 
     end
     
-    def apply_filters(object, filters);
+    def apply_filters(object, filters)
       filters.each do |filter|
         name, *args = filter
         

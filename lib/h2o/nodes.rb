@@ -17,10 +17,15 @@ module H2o
      @stack = []  
     end
     
-    def render(context, stream)
+    def render(context = {}, stream = false)
+      stream = [] unless stream
+      context = Context.new(context) if context.is_a? Hash
+
       @stack.each do |node|
         node.render(context, stream)
       end
+      
+      stream.join
     end
     
     def <<(node)
@@ -49,12 +54,8 @@ module H2o
     end
     
     def render(context, stream)
-      variable = context.resolve(@name)
+      variable = @name.is_a?(Symbol) ? context.resolve(@name) : @name
       variable = context.apply_filters(variable, @filters) if @filters
-      # variable = variable.to_s.gsub(/&/, '&amp;')\
-      #                         .gsub(/>/, '&gt;')\
-      #                         .gsub(/</, '&lt;')
-      
       stream << variable
     end
   end
