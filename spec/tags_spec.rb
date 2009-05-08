@@ -1,6 +1,6 @@
 require 'spec/spec_helper.rb'
 require 'pp'
-0
+
 describe "For tags" do
   
   it "should iteration through array" do
@@ -18,7 +18,11 @@ describe "For tags" do
   
   it "should iterate through a hash object" do
     context = {:person => {:name => 'taylor', :age => 19}}
-    r = parse("{%for a in person%}")
+    r = parse("{%for a in person%}{{ a }}{% endfor %}").render(context)
+    r.should == '19taylor'
+    
+    r = parse("{%for a, b in person %}{{ a }}{{ b }}{% endfor %}").render(context)
+    r.should == 'age19nametaylor'
   end
 
 end

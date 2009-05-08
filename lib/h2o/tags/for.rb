@@ -1,19 +1,19 @@
 module H2o
   module Tags
     class For < Tag
-      Syntax = /(#{H2o::NAME_RE},)\s?(#{H2o::NAME_RE})\s+in\s+(#{H2o::NAME_RE})\s*(reversed)?/
+      Syntax = /(?:(#{H2o::NAME_RE}),\s?)?(#{H2o::NAME_RE})\s+in\s+(#{H2o::NAME_RE})\s*(reversed)?/
 
       def initialize(parser, argstring)
+        @key = false
         @else = false
         @body = parser.parse(:else, :endfor)
-        @else = parser.parse(:endfor) if parser.token.include? 'else'
-        require 'pp'
-        if matches = argstring.match Syntax
-          
-          pp matches.length
-          @item = $1.to_sym
-          @iteratable = $2.to_sym
-          @reverse = !$3.nil?
+        @else = parser.parse(:endfor) if parser.token && parser.token.include?('else')
+        
+        if matches = Syntax.match(argstring)
+          @key = $1.to_sym unless $1.nil?
+          @item = $2.to_sym
+          @iteratable = $3.to_sym
+          @reverse = !$4.nil?
         else
           raise SyntaxError, "Invalid for loop syntax "
         end
@@ -32,10 +32,19 @@ module H2o
           parent = context[:loop]
           # Main iteration
           context.stack do
-            iteratable.each_with_index do |item, index|
+            iteratable.each_with_index do |*args|
+
+              if args.first.is_a? Array
+                keyvalue, index = args
+                key, value = keyvalue
+              else
+                value, index = args
+              end
+              
               is_even = index % 2 != 0
               rev_count = length - index
-              context[@item] = item
+              context[@item] = value
+              context[@key] = key
               context[:loop] = {
                 :parent => parent,
                 :first => index == 0,
