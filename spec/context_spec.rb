@@ -1,9 +1,18 @@
 require 'spec/spec_helper'
 
+class User
+  h2o_safe :name, :age
+  attr_accessor :name, :age
+  def initialize name, age
+    @name, @age = name, age
+  end
+end
+
 scope = {
   :person => {:name => 'peter', :age => 18},
   :weather => 'sunny and warm',
-  :items => ['apple', 'orange', 'pear']
+  :items => ['apple', 'orange', 'pear'],
+  :user => User.new('taylor', 19)
 }
 context = H2o::Context.new(scope)
 
@@ -34,6 +43,12 @@ describe "Resolve name" do
     context.resolve('items.first').should == 'apple'
     context.resolve('items.last').should == 'pear'
   end
+  
+  it "should resolve object methods" do
+    
+    context.resolve('user.name').should == 'taylor'
+    context.resolve('user.age').should == 19
+  end
 end
 
 describe "Local lookup" do      
@@ -53,7 +68,7 @@ describe "Local lookup" do
     context[:state].should == 'nsw'
   end
 end
-  
+
 describe "Context stack" do
   it "should allow pushing and popping local context layer in the stack" do
     context.push

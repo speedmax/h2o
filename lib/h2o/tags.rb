@@ -15,7 +15,7 @@ module H2o
   end
 end
 
-require 'h2o/tags/if'
-require 'h2o/tags/for'
-require 'h2o/tags/block'
-require 'h2o/tags/with'
+require File.dirname(__FILE__) + '/tags/if'
+require File.dirname(__FILE__) + '/tags/for'
+require File.dirname(__FILE__) + '/tags/block'
+require File.dirname(__FILE__) + '/tags/with'

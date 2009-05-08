@@ -41,11 +41,12 @@ module H2o
   end
 end
 
-require 'h2o/constants'
-require 'h2o/errors'
-require 'h2o/nodes'
-require 'h2o/filters'
-require 'h2o/tags'
-require 'h2o/parser'
-require 'h2o/context'
+require File.dirname(__FILE__) + '/h2o/constants'
+require File.dirname(__FILE__) + '/h2o/errors'
+require File.dirname(__FILE__) + '/h2o/nodes'
+require File.dirname(__FILE__) + '/h2o/filters'
+require File.dirname(__FILE__) + '/h2o/tags'
+require File.dirname(__FILE__) + '/h2o/parser'
+require File.dirname(__FILE__) + '/h2o/context'
 
+require File.dirname(__FILE__) + '/core_ext/object'

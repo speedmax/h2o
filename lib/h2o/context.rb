@@ -100,9 +100,9 @@ module H2o
           end
         
         # H2o::DataObject Type
-        elsif object.is_a?(DataObject) && \
-              object.respond_to?(part_sym) && value = object.__send__(part_sym)
-          object = value
+        elsif (object.is_a?(DataObject) || object.class.h2o_safe_methods && object.class.h2o_safe_methods.include?(part_sym) )&& \
+              object.respond_to?(part_sym)
+          object = object.__send__(part_sym)
         
         # Sweet array shortcuts
         elsif object.respond_to?(part_sym) && [:first, :length, :size, :last].include?(part_sym) 

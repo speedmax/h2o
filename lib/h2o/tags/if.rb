@@ -1,15 +1,5 @@
 module H2o
   module Tags
-    class Evaluator
-      class << self
-        def ==(left, right) left == right ;end
-        def >(left, right) left > right; end
-        def >=(left, right) left >= right; end
-        def <(left, right) left < right; end
-        def <= (left, right) left <= right; end
-      end
-    end
-    
     class If < Tag
       def initialize(parser, argstring)
         @else = false
@@ -27,14 +17,14 @@ module H2o
       end
 
       def render(context, stream)
-        if test(context)
+        if self.evaluate(context)
           @body.render(context, stream)
         else
           @else.render(context, stream) if @else
         end
       end
-
-      def test(context)
+      
+      def evaluate(context)
         if @args.size == 1
           object = context.resolve(@args.first)
           if object == false
@@ -56,9 +46,22 @@ module H2o
           left, op, right = @args
           right = context.resolve(right) if right.is_a? Symbol
           left = context.resolve(left) if left.is_a? Symbol
-          result = Evaluator.send(op[:operator], left, right)
+          result = comparisons(op[:operator], left, right)
         end
         return result
+      end
+      
+      def comparision(operator, left, right)
+        tests = {
+          :>  => lamda{|l,r| l > r },
+          :>= => lamda{|l,r| l >= r },
+          :== => lamda{|l,r| l == r },
+          :<  => lamda{|l,r| l < r},
+          :<= => lamda{|l,r| l <= r}
+        }
+        
+        tests[operator.to_sym] ? 
+          tests[operator.to_sym].call(left,right) : false
       end
       
       Tags.register(self, :if)
