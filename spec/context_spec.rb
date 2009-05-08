@@ -89,10 +89,12 @@ describe "Context stack" do
         context[:name] = 'b'
     
         context.stack do
+          context[:age] = 19
           context[:name] = 'c'
           context.resolve('name').should == 'c'
         end
         
+        context.resolve('age').should == nil
         context.resolve('name').should == 'b'
       end
     

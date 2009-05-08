@@ -1,7 +1,7 @@
 module H2o
   module Tags
     class For < Tag
-      Syntax = /(\w+)\s+in\s+(\w+)\s*(reversed)?/
+      Syntax = /(#{H2o::NAME_RE})\s+in\s+(#{H2o::NAME_RE})\s*(reversed)?/
 
       def initialize(parser, argstring)
         @else = false
@@ -10,7 +10,7 @@ module H2o
 
         if argstring.match Syntax
           @item = $1.to_sym
-          @iteratable = $2
+          @iteratable = $2.to_sym
           @reverse = !$3.nil?
         else
           raise SyntaxError, "Invalid for loop syntax "
@@ -21,7 +21,7 @@ module H2o
         iteratable = context.resolve(@iteratable)
         iteratable.reverse! if @reverse
         length = 0
-        
+
         if iteratable.respond_to?(:each)
           length = iteratable.size || iterabe.length
         end
