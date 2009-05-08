@@ -1,14 +1,16 @@
 module H2o
   module Tags
     class For < Tag
-      Syntax = /(#{H2o::NAME_RE})\s+in\s+(#{H2o::NAME_RE})\s*(reversed)?/
+      Syntax = /(#{H2o::NAME_RE},)\s?(#{H2o::NAME_RE})\s+in\s+(#{H2o::NAME_RE})\s*(reversed)?/
 
       def initialize(parser, argstring)
         @else = false
         @body = parser.parse(:else, :endfor)
         @else = parser.parse(:endfor) if parser.token.include? 'else'
-
-        if argstring.match Syntax
+        require 'pp'
+        if matches = argstring.match Syntax
+          
+          pp matches.length
           @item = $1.to_sym
           @iteratable = $2.to_sym
           @reverse = !$3.nil?

@@ -17,7 +17,8 @@ describe "For tags" do
   end
   
   it "should iterate through a hash object" do
-    pending
+    context = {:person => {:name => 'taylor', :age => 19}}
+    r = parse("{%for a in person%}")
   end
 
 end
@@ -27,7 +28,4 @@ def parse(source)
   H2o::Template.parse(source)
 end
 
-
-class Collection < Array
-
-end
+class Collection < Array;end
