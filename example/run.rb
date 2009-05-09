@@ -49,7 +49,7 @@ context = {
     'body' =>'page body' 
   },
   #:callable => Proc.new { "my ass"; a = 2/0 },
-  'links' => ["http://google.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com"]
+  'links' => ["http://google.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com", "http://yahoo.com"]
 }
 
 # require 'liquid'
@@ -69,10 +69,14 @@ context = {
 
 address= "localhost:#{(ARGV[0]||80)}"
 
-# Start server and run template
-Server.start address do |s|  
-  require 'h2o'
 
+# Start server and run template
+Server.start address do |s|
+  Object.class_eval do
+    remove_const 'H2o' if const_defined? 'H2o'
+  end
+
+  require 'h2o'
 
   h2o = H2o::Template.new('h2o/index.html')
   # liquid  = Liquid::Template.parse(Pathname.new('liquid/base.html').read)
@@ -80,7 +84,7 @@ Server.start address do |s|
   # 
    Benchmark.bm do|b|
      
-       b.report('H2o time :') { s.print h2o.render(context) }
+       # b.report('H2o time :') { s.print h2o.render(context) }
 #     
 #       s.print 'liquid rendering result<hr>'
 #       b.report("Liquid time :") { s.print liquid.render(context) }
@@ -89,8 +93,8 @@ Server.start address do |s|
 #       b.report("erb time :") { s.print erb.render(context) }
    end
 
-#    profile :memory do
-#      s.print h2o.render(context)
-#    end
+   profile :memory do
+     s.print h2o.render(context)
+   end
 end
 

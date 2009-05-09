@@ -6,6 +6,27 @@
 	<title>something {{ page.title | capitalize }}</title>
 </head>
 <body>
+  
+{% if 1 > 2 %}
+1 > 2
+{% else %}
+2 > 1
+{% endif %}
+  
+{% if true == true %}
+Truth
+{% endif %}
+
+{% if nil == nil %}
+devel exists
+{% endif %}
+
+{% if 2.3 > 2 %}
+biggie
+{% endif %}
+
+
+  
 {{ links.length }}
 
 {% if page.title == "this is a title" %}
