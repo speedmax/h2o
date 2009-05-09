@@ -1,14 +1,6 @@
 module H2o
   class Context
-    Pattern = {
-      :string => /^["'](.*?[^\\]|.*?)["']$/,
-      :float => /(-?\d+\.\d+)/,
-      :integer => /^-?\d+$/,
-      :bracket => /\[([^\]]+)\]/,
-      :name => /\[[^\]]+\]|(?:[\w\-]\??)+/,
-    }
-    
-    #include Enumerable
+
     def initialize(context ={})
       @stack = [context]
     end
@@ -26,7 +18,7 @@ module H2o
     def []=(name, value)
       @stack.first[name] = value
     end
-    
+
     def pop
       @stack.shift if @stack.size > 1
     end
@@ -46,54 +38,30 @@ module H2o
       result
     end
 
-    def resolve(name); 
-      case name
-        when 'nil', ''
-          nil
-        when :true
-          true
-        when :fase
-          false
-        when Symbol
-          resolve_variable(name)
-        when /^['"](.*)['"]$/
-          $1.to_s
-        when /^-?\d+\.\d+$/
-          name.to_f
-        when /^-?\d+$/
-          name.to_i
-        else
-          resolve_variable(name)
-      end
-    end
-
-    def resolve_variable(name)
+    def resolve(name)
+      return name unless name.is_a? Symbol
+      
       object = self
-      # parts = name.to_s.scan(/\[[^\]]+\]|(?:[\w\-]\??)+/)
-      parts = name.to_s.split(/\./)
+      parts = name.to_s.split('.')
       part_sym = nil
 
       parts.each do |part|
-        # Support bracket
-        #part = resolve($1) if part =~ /\[([^\]]+)\]/
         part_sym = part.to_sym
 
         # Hashes
-        if object.respond_to?(:has_key?) && value = (object[part_sym] || object[part] )
-          unless value.is_a?(Proc)
-            object = value
-          else
+        if object.respond_to?(:has_key?) && (object.has_key?(part_sym) || object.has_key?(part))
+            result = object[part_sym] || object[part]
             # Proc object with extra caution
             begin
-              object = value.call
+              result = object[part_sym] = result.call if result.is_a?(Proc) && object.respond_to?(:[]=)
             rescue
               return nil
             end
-          end
-
+            object = result
+      
         # Array and Hash like objects
         elsif part.match(/^-?\d+$/)
-          if object.respond_to?(:has_key?) || object.respond_to?(:fetch) && value = object[part.to_i]
+          if (object.respond_to?(:has_key?) || object.respond_to?(:fetch)) && value = object[part.to_i]
             object = value
           else
             return nil
@@ -105,18 +73,18 @@ module H2o
           object = object.__send__(part_sym)
         
         # Sweet array shortcuts
-        elsif object.respond_to?(part_sym) && [:first, :length, :size, :last].include?(part_sym) 
+        elsif object.respond_to?(part_sym) && [:first, :length, :size, :last].include?(part_sym)
           object = object.__send__(part_sym)
         else
           return nil
         end
       end
+      
       object
     end
-    
+
     def has_key?(key)
       !send(:[], key).nil?
-
     end
     
     def apply_filters(object, filters)

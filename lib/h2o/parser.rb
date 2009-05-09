@@ -99,6 +99,8 @@ module H2o
           when :filter_end
             result << filter_buffer.dup unless filter_buffer.empty?
             current_buffer = result
+          when :nil
+            current_buffer << nil
           when :boolean
             current_buffer << (data == 'true'? true : false)
           when :name
@@ -151,6 +153,8 @@ module H2o
             result << [:operator, match]
           elsif match = s.scan(BOOLEAN_RE)
             result << [:boolean, match]
+          elsif match = s.scan(NIL_RE)
+            result << [:nil, match]
           elsif match = s.scan(NAMED_ARGS_RE)
             result << [:named_argument, match]
           elsif match = s.scan(NAME_RE)
@@ -178,6 +182,8 @@ module H2o
             state = :initial
           elsif match = s.scan(BOOLEAN_RE)
             result << [:boolean, match]
+          elsif match = s.scan(NIL_RE)
+            result << [:nil, match]
           elsif match = s.scan(NAMED_ARGS_RE)
             result << [:named_argument, match]
           elsif match = s.scan(NAME_RE)
