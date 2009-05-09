@@ -1,7 +1,11 @@
 module H2o
   module Tags
     class For < Tag
-      Syntax = /(?:(#{H2o::NAME_RE}),\s?)?(#{H2o::NAME_RE})\s+in\s+(#{H2o::NAME_RE})\s*(reversed)?/
+      Syntax = /
+        (?:(#{H2o::IDENTIFIER_RE}),\s?)?
+        (#{H2o::IDENTIFIER_RE})\s+in\s+(#{H2o::NAME_RE})\s*
+        (reversed)?
+      /x
 
       def initialize(parser, argstring)
         @key = false

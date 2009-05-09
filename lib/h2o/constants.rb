@@ -7,8 +7,10 @@ module H2o
   COMMENT_START = '{*'
   COMMENT_END = '*}'
   
+  IDENTIFIER_RE = /[a-zA-Z_][a-zA-Z0-9_]*/
+  
   NAME_RE = /
-    [a-zA-Z_][a-zA-Z0-9_]*
+    #{IDENTIFIER_RE}
     (?:\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*
   /x
   
