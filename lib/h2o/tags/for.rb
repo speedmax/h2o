@@ -37,15 +37,14 @@ module H2o
           # Main iteration
           context.stack do
             iteratable.each_with_index do |*args|
+              value, index = args
 
               if args.first.is_a? Array
-                keyvalue, index = args
-                key, value = keyvalue
+                key, value = value
               else
-                value, index = args
                 key = index
               end
-              
+
               is_even = index % 2 != 0
               rev_count = length - index
               context[@item] = value
