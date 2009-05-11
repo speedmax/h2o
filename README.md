@@ -18,14 +18,32 @@ H2O is markup language for Ruby :) that taken a lot of inspiration from django.
  Install
  
  `gem install speedmax-h2o --source=http://gems.github.com`
+
+ as Rails Gem dependencies
+
+ `config.gem 'speedmax-h2o', :lib => 'h2o', :source=> 'http://gems.github.com'`
+
+ as Rails Plugin
+
+ `script/plugin install git://github.com/speedmax/h2o.git`
+
+ With Git
+
+ `git clone http://github.com/speedmax/h2o.git`
  
  Download
 
  [<img src="http://github.com/images/modules/download/zip.png">](http://github.com/speedmax/h2o/zipball/master)
 
- With Git
 
- `git clone http://github.com/speedmax/h2o.git`
+Quick start
+-----------------------
+
+Your ruby script
+
+    require 'h2o'
+    person = { :name => 'taylor luk', :age => 27 }
+    puts H2o::template.parse('{{ person.name }}').render(:person => person)
 
 
 Documentation
