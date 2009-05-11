@@ -65,6 +65,7 @@ describe "Resolve name" do
     
       # Cached inline
       context.resolve(:'procs.generation').usec.should == result.usec
+      
       context.resolve(:'procs.generation').usec.should == result.usec
     end
   end
