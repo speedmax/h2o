@@ -31,7 +31,7 @@ module H2o
     #{IDENTIFIER_RE}
     (?:\.[a-zA-Z0-9][a-zA-Z0-9_-]*)*
   /x
-  
+
   NAMED_ARGS_RE = /
     (#{NAME_RE})(?:#{WHITESPACE_RE})?
     :

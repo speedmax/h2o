@@ -61,7 +61,7 @@ describe "Resolve name" do
       # Resolve a proc object
       context.resolve(:'procs.test').should == 'testing'
       result = context.resolve(:'procs.generation')
-      result.should be_a Time
+      result.should be_a(Time)
     
       # Cached inline
       context.resolve(:'procs.generation').usec.should == result.usec

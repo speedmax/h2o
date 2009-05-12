@@ -3,7 +3,7 @@ module H2o
     attr_reader :token, :env
     attr_accessor :storage
     
-    ParseRegex = /\G
+    ParseRegex = /
       (.*?)(?:
         #{Regexp.escape(BLOCK_START)}    (.*?)
         #{Regexp.escape(BLOCK_END)}          |
@@ -25,10 +25,27 @@ module H2o
 
     def tokenize
       result = []
+      lstrip = false
+      rstrip = false
+
       @source.scan(ParseRegex).each do |match|
         result << [:text, match[0]] if match[0] and !match[0].empty?
-        
+        # strip next left white spaces
+        result.last[1].lstrip! if lstrip
+
         if data = match[1]
+          data = data.strip
+          
+          # strip right whitespaces on previous text node
+          if rstrip = data[0].chr == "-"
+            data.slice!(0)
+            result.last[1].rstrip! if rstrip
+          end
+          
+          if lstrip = data[data.length-1].chr == "-"
+            data.chop!
+          end
+
           result << [:block, data.strip]
         elsif data = match[2]
           result << [:variable, data.strip]
@@ -40,6 +57,8 @@ module H2o
       rest = $~.nil? ? @source : @source[$~.end(0) .. -1]
       unless rest.empty?
         result << [:text, rest]
+        # strip next left white spaces
+        result.last[1].lstrip! if lstrip
       end
       result.reverse
     end

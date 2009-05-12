@@ -84,7 +84,7 @@ Server.start address do |s|
    Benchmark.bm do|b|
 
        b.report('H2o time :') { 
-         h2o = H2o::Template.new('h2o/index.html')
+         h2o = H2o::Template.new('../benchmark/source.html')
 
          s.print h2o.render(context)
        }

@@ -57,5 +57,24 @@ describe 'H2o::Parser argument parsing' do
       ]
     ]
   end
-  
+end
+
+
+describe "Whitespace stripping syntax" do
+  it "should rstrip previous text node for {%- %}" do
+    H2o::Template.parse('   {%- if true %}{% endif %}').render.should == ''
+  end
+    
+  it "should lstrip next text node for {% -%}" do
+    H2o::Template.parse('{% if true -%}   {% endif %}').render.should == ''
+  end
+
+  it "should strip whitespace on both site with {%- -%}" do
+    H2o::Template.parse('
+      {%- if true -%}
+        hello
+      {%- endif -%}   
+    ').render.should == 'hello'
+  end
+
 end
