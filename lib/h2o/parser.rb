@@ -3,7 +3,7 @@ module H2o
     attr_reader :token, :env
     attr_accessor :storage
     
-    ParseRegex = /
+    ParseRegex = /\G
       (.*?)(?:
         #{Regexp.escape(BLOCK_START)}    (.*?)
         #{Regexp.escape(BLOCK_END)}          |
