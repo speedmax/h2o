@@ -1,0 +1,11 @@
+module Autotest::RspecMod  
+ Autotest.add_hook :initialize do |autotest|  
+   # Map to all "*_spec.rb" files inside spec and its sub directory.  
+   regexp = %r%^lib/(.*)\.rb$%  
+ 
+   autotest.remove_mapping(regexp)  
+   autotest.add_mapping(regexp) do |filename, m|  
+     autotest.files_matching(%r%^spec/.*#{m[1]}_spec.rb$%)  
+   end  
+ end  
+end

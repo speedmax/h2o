@@ -1,17 +1,6 @@
 module H2o
   require 'pathname'
 
-  class Stream < Array
-    
-    def << (item)
-      unshift item.to_s
-    end
-    
-    def close
-      reverse!
-    end
-  end
-
   class Template
     attr_reader :context
     
@@ -42,6 +31,7 @@ module H2o
 end
 
 require File.dirname(__FILE__) + '/core_ext/object'
+require File.dirname(__FILE__) + '/core_ext/method'
 
 require File.dirname(__FILE__) + '/h2o/constants'
 require File.dirname(__FILE__) + '/h2o/errors'

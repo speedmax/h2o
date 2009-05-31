@@ -11,6 +11,8 @@ module H2o
   end
   
   class StandardFilters < FilterCollection
+    
+    # String filters
     def upper value
       value.to_s.upcase
     end
@@ -30,8 +32,20 @@ module H2o
       value.gsub!(/"/, '&quot;') if attribute
       value
     end
-
     
+    # Array Filters
+    def join(value, delimiter = ', ')
+      value.join(delimiter)
+    end
+    
+    def first(value)
+      value.first
+    end
+    
+    def last(value)
+      value.last
+    end
+
     def test value, arg1, arg2
       "#{value} #{arg1} #{arg2}" 
     end

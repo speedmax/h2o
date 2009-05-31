@@ -90,9 +90,9 @@ module H2o
     def apply_filters(object, filters)
       filters.each do |filter|
         name, *args = filter
-        
         filter = Filters[name] 
-        raise FilterError, "Filter not found" if filter.nil?
+        
+        raise FilterError, "Filter(#{name}) not found" if filter.nil?
         
         args.map! do |arg|
           if arg.kind_of? Symbol
@@ -101,6 +101,7 @@ module H2o
             arg
           end
         end
+        
         object = filter.call(object, *args)
       end
       object
