@@ -4,7 +4,7 @@ module H2o
       instance = self.new
       instance_methods(false).each do |method|
         name = method.to_sym
-        filter = instance.method(name).to_proc
+        filter = instance.method(name).filter_to_proc
         block.call(name, filter)
       end
     end
