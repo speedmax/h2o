@@ -133,7 +133,7 @@ module H2o
             current_buffer << {} unless current_buffer.last.is_a?(Hash)
             
             named_args = current_buffer.last
-            name, value = data.split(':').map{|m| m.strip}
+            name, value = data.split(':', 2).map{|m| m.strip}
             named_args[name.to_sym] = parse_arguments(value).first
           when :operator
             # replace exclaimation mark '!' into not

@@ -59,7 +59,6 @@ describe 'H2o::Parser argument parsing' do
   end
 end
 
-
 describe "Whitespace stripping syntax" do
   it "should rstrip previous text node for {%- %}" do
     H2o::Template.parse('   {%- if true %}{% endif %}').render.should == ''
