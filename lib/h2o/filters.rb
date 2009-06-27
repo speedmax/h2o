@@ -1,85 +1,49 @@
 module H2o
-  class FilterCollection 
-    def self.each_filter (&block)
-      instance = self.new
-      instance_methods(false).each do |method|
-        name = method.to_sym
-        filter = instance.method(name).filter_to_proc
-        block.call(name, filter)
+  module Filters
+    
+    class Base < H2o::DataObject
+      def initialize(context)
+        @context = context
       end
     end
-  end
-  
-  class StandardFilters < FilterCollection
-    
-    # String filters
-    def upper value
-      value.to_s.upcase
-    end
-    
-    def lower value
-      value.to_s.downcase
-    end
-    
-    def capitalize value
-      value.to_s.capitalize
-    end
-    
-    def escape value, attribute=false
-      value = value.to_s.gsub(/&/, '&amp;')\
-                       .gsub(/>/, '&gt;')\
-                       .gsub(/</, '&lt;')
-      value.gsub!(/"/, '&quot;') if attribute
-      value
-    end
-    
-    # Array Filters
-    def join(value, delimiter = ', ')
-      value.join(delimiter)
-    end
-    
-    def first(value)
-      value.first
-    end
-    
-    def last(value)
-      value.last
-    end
 
-    def test value, arg1, arg2
-      "#{value} #{arg1} #{arg2}" 
-    end
-  end
+    @filters = []
 
-  module Filters
-    @filters = {}
     # Class methods of filters
     class << self
       def [] name
         @filters[name]
       end
       
-      def register_collection(collection)
-        raise 'Collection needs to be a kind of FilterCollection' unless collection.ancestors.include? FilterCollection
-        collection.each_filter do |name, filter|
-          @filters[name] = filter
+      def << (filter)
+        @filters << filter
+      end
+      
+      def register filter
+        @filters << filter
+      end
+      
+      def build(context)
+        @base = Base.new(context)
+
+        @filters.each do |filter|
+          @base.extend(filter)
         end
-        nil
+
+        @base
       end
       
-      def register name, filter
-        @filters[name] = filter
-      end
-      
-      def add name, &block
-        raise "Require a block" unless block
-        @filters[name] = block
+      def create name, &block
+        Base.class_eval do
+          define_method name, &block
+        end
       end
       
       def all
-        @filters.keys
+        @filters
       end
     end
   end
-  Filters.register_collection StandardFilters
 end
+
+require File.dirname(__FILE__) + '/filters/default'

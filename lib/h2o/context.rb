@@ -3,6 +3,8 @@ module H2o
 
     def initialize(context ={})
       @stack = [context]
+      
+      @filter_env = Filters.build(self)
     end
 
     # doing a reverse lookup
@@ -90,9 +92,8 @@ module H2o
     def apply_filters(object, filters)
       filters.each do |filter|
         name, *args = filter
-        filter = Filters[name] 
-        
-        raise FilterError, "Filter(#{name}) not found" if filter.nil?
+
+        raise FilterError, "Filter(#{name}) not found" unless @filter_env.respond_to?(name)
         
         args.map! do |arg|
           if arg.kind_of? Symbol
@@ -102,7 +103,9 @@ module H2o
           end
         end
         
-        object = filter.call(object, *args)
+        
+        
+        object = @filter_env.__send__(name, object, *args)
       end
       object
     end
@@ -112,10 +115,6 @@ module H2o
   class DataObject
     INTERNAL_METHOD = /^__/
     @@required_methods = [:__send__, :__id__, :object_id, :respond_to?, :extend, :methods, :class, :nil?, :is_a?]
-    
-    def initialize(context)
-      @context = context
-    end
 
     def respond_to?(method)
       method_name = method.to_s

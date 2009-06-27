@@ -36,9 +36,9 @@ require File.dirname(__FILE__) + '/core_ext/method'
 require File.dirname(__FILE__) + '/h2o/constants'
 require File.dirname(__FILE__) + '/h2o/errors'
 require File.dirname(__FILE__) + '/h2o/nodes'
-require File.dirname(__FILE__) + '/h2o/filters'
 require File.dirname(__FILE__) + '/h2o/tags'
 require File.dirname(__FILE__) + '/h2o/parser'
 require File.dirname(__FILE__) + '/h2o/context'
+require File.dirname(__FILE__) + '/h2o/filters'
 
 

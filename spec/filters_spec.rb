@@ -1,46 +1,62 @@
 require 'spec/spec_helper'
-require 'pp'
 
-describe "Filter parameter passing" do
-  it "should pass input object as first param" do
+describe H2o::Filters do
+
+  it "should pass input object as first param" do    
+    H2o::Filters << TestFilters
+    
     
     # try a standard filter
-    parse('{{ "something" | upper }}').render.should == 'SOMETHING'
-    
+    render('{{ "something" | upper }}').should == 'SOMETHING'
 
-    # try a array input object
-    H2o::Filters.add(:test_filter) do |input|
-      "#{input.inspect}"
-    end
-    
+    # # try a array input object
     list = ["man","women"]
-    result = parse('{{ object| test_filter }}').render(:object => list)
-    result.should == list.inspect
+    render('{{ object| test_filter }}', :object => list).should == list.inspect
     
     # Try a array subclass
     list = CustomCollection.new(["man", "woman"])
-    
-    result = parse('{{ object| test_filter }}').render(:object => list)
-    result.should == list.inspect
+    render('{{ object| test_filter }}', :object => list).should == list.inspect
   end
   
   it "should be able to pass aditional parameters" do
-    H2o::Filters.add(:test_filter) do |string, param1, param2|
-      "#{string}-#{param1}-#{param2}"
-    end
-    parse('{{ "test"| test_filter 1, 2 }}').render.should == 'test-1-2'
+    render('{{ "test"| test_filter_2 1, 2 }}').should == 'test-1-2'
   end
 end
 
-describe 'Standard Filters' do
-  it "should upcase an string" do
-      parse('{{ "test" | upper }}').render.should == 'TEST'
+describe DefaultFilters do
+
+  it "should privide a set of default filters" do
+    
+    render('{{ "test" |upper }}').should == 'TEST'
+    
+    render('{{ "TEST" |lower }}').should == 'test'
+    
+    render('{{ "test" |capitalize }}').should == 'Test'
+    
+    render('{{ list |first }}', :list => [1,2]).should == "1"
+    
+    render('{{ list |last }}', :list => [1,2]).should == "2"
+    
+    render('{{ list |join }}', :list => [1,2]).should == "1, 2"
+
+  end
+
+end
+
+# 
+module TestFilters
+  def test_filter (input)
+    "#{input.inspect}"
+  end
+  
+  def test_filter_2 (string, param1, param2)
+   "#{string}-#{param1}-#{param2}"
   end
 end
 
-
-def parse src
-  H2o::Template.parse(src)
+class CustomCollection < Array
 end
 
-class CustomCollection < Array; end
+def render(src, context = {})
+  H2o::Template.parse(src).render(context)
+end
