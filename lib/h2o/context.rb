@@ -3,7 +3,6 @@ module H2o
 
     def initialize(context ={})
       @stack = [context]
-      
       @filter_env = Filters.build(self)
     end
 
@@ -59,12 +58,12 @@ module H2o
             rescue
               return nil
             end
-            object = result
+            object = result.to_h2o
       
         # Array and Hash like objects
         elsif part.match(/^-?\d+$/)
           if (object.respond_to?(:has_key?) || object.respond_to?(:fetch)) && value = object[part.to_i]
-            object = value
+            object = value.to_h2o
           else
             return nil
           end
@@ -72,11 +71,11 @@ module H2o
         # H2o::DataObject Type
         elsif (object.is_a?(DataObject) || object.class.h2o_safe_methods && object.class.h2o_safe_methods.include?(part_sym) )&& \
               object.respond_to?(part_sym)
-          object = object.__send__(part_sym)
+          object = object.__send__(part_sym).to_h2o
         
         # Sweet array shortcuts
         elsif object.respond_to?(part_sym) && [:first, :length, :size, :last].include?(part_sym)
-          object = object.__send__(part_sym)
+          object = object.__send__(part_sym).to_h2o
         else
           return nil
         end
@@ -102,9 +101,7 @@ module H2o
             arg
           end
         end
-        
-        
-        
+
         object = @filter_env.__send__(name, object, *args)
       end
       object

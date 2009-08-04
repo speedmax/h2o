@@ -1,10 +1,18 @@
 require 'spec/spec_helper'
 
 class User
-  h2o_safe :name, :age
+  h2o_expose :name, :age
   attr_accessor :name, :age
+  
   def initialize name, age
     @name, @age = name, age
+  end
+  
+  def to_h2o
+    {
+      :name => self.name,
+      :age => self.age
+    }
   end
 end
 
@@ -65,7 +73,6 @@ describe "Resolve name" do
     
       # Cached inline
       context.resolve(:'procs.generation').usec.should == result.usec
-      
       context.resolve(:'procs.generation').usec.should == result.usec
     end
   end

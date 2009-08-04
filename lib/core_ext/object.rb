@@ -1,5 +1,5 @@
 class Object
-  def self.h2o_safe(*attrs)
+  def self.h2o_expose(*attrs)
     @h2o_safe = attrs
   end
   
@@ -7,4 +7,7 @@ class Object
     @h2o_safe
   end
   
+  def to_h2o
+    self
+  end
 end

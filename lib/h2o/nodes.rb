@@ -1,9 +1,11 @@
 module H2o
   class Node 
     def initialize(parser, position = 0)
+      raise "Subclass should implement initialize method"
     end
     
     def render(context, stream)
+      raise "Subclass should implement method method"
     end
   end
   
