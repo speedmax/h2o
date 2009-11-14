@@ -35,6 +35,6 @@ Gem::Specification.new do |s|
 		"example/liquid/base.html",
 		]
   s.test_files = []
-  s.rdoc_options = ["--main", "README"]
-  s.extra_rdoc_files = ["README"]
+  s.rdoc_options = ["--main", "README.md"]
+  s.extra_rdoc_files = ["README.md"]
 end
