@@ -6,6 +6,19 @@ rescue LoadError
   exit
 end
 
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "h2o"
+    gemspec.summary = "h2o is a django inspired template"
+    gemspec.description = "h2o is a django inspired template that offers natural template syntax and easy to integrate."
+    gemspec.email = "subjective@gmail.com"
+    gemspec.homepage = "http://www.h2o-template.org"
+    gemspec.authors = ["Taylor luk"]
+  end
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
+end
 
 desc "Run the specs under spec"
 Spec::Rake::SpecTask.new do |t|

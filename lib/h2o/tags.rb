@@ -12,10 +12,6 @@ module H2o
     end
     
     class Tag < Node; end
+
   end
 end
-
-require File.dirname(__FILE__) + '/tags/if'
-require File.dirname(__FILE__) + '/tags/for'
-require File.dirname(__FILE__) + '/tags/block'
-require File.dirname(__FILE__) + '/tags/with'

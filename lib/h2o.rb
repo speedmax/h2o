@@ -1,43 +1,24 @@
+require 'pathname'
+require 'core_ext/object'
+require 'h2o/constants'
+
+$:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
+
 module H2o
-  require 'pathname'
-
-  class Template
-    attr_reader :context
-    
-    def initialize (filename, env = {})
-      @file = Pathname.new(filename)
-      env[:search_path] = @file.dirname
-      @nodelist = Template.load(@file, env)
-    end
-    
-    def render (context = {})
-      @context = Context.new(context)
-      output_stream = []
-      @nodelist.render(@context, output_stream)
-      output_stream.join
-    end
-
-    def self.parse source, env = {}
-      parser = Parser.new(source, false, env)
-      parsed = parser.parse
-    end
-    
-    def self.load file, env = {}
-      file = env[:search_path] + file if file.is_a? String
-      parser = Parser.new(file.read, file, env)
-      parser.parse
-    end
+  autoload :Template,   'h2o/template'
+  autoload :Error,      'h2o/error'
+  autoload :Context,    'h2o/context'
+  autoload :Parser,     'h2o/parser'
+  autoload :Node,       'h2o/nodes'
+  autoload :DataObject, 'h2o/context'
+  autoload :Filters,    'h2o/filters'
+  autoload :Tags,       'h2o/tags'
+  
+  module Tags
+    autoload :If,       'h2o/tags/if'
+    autoload :For,      'h2o/tags/for'
+    autoload :With,     'h2o/tags/with'
+    autoload :Block,    'h2o/tags/block'
+    autoload :Extends,  'h2o/tags/extends'
   end
 end
-
-require File.dirname(__FILE__) + '/core_ext/object'
-
-require File.dirname(__FILE__) + '/h2o/constants'
-require File.dirname(__FILE__) + '/h2o/errors'
-require File.dirname(__FILE__) + '/h2o/nodes'
-require File.dirname(__FILE__) + '/h2o/tags'
-require File.dirname(__FILE__) + '/h2o/parser'
-require File.dirname(__FILE__) + '/h2o/context'
-require File.dirname(__FILE__) + '/h2o/filters'
-
-

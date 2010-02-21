@@ -1,5 +1,4 @@
-require 'spec/spec_helper'
-require 'pp'
+require 'spec_helper'
 
 describe "Parser regex" do
   

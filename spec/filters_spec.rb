@@ -1,10 +1,8 @@
-require 'spec/spec_helper'
+require 'spec_helper'
 
 describe H2o::Filters do
-
   it "should pass input object as first param" do    
     H2o::Filters << TestFilters
-    
     
     # try a standard filter
     render('{{ "something" | upper }}').should == 'SOMETHING'
@@ -24,7 +22,6 @@ describe H2o::Filters do
 end
 
 describe DefaultFilters do
-
   it "should privide a set of default filters" do
     
     render('{{ "test" |upper }}').should == 'TEST'
@@ -38,9 +35,7 @@ describe DefaultFilters do
     render('{{ list |last }}', :list => [1,2]).should == "2"
     
     render('{{ list |join }}', :list => [1,2]).should == "1, 2"
-
   end
-
 end
 
 # 
