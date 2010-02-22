@@ -15,10 +15,10 @@ module H2o
   autoload :Tags,       'h2o/tags'
   
   module Tags
-    autoload :If,       'h2o/tags/if'
-    autoload :For,      'h2o/tags/for'
-    autoload :With,     'h2o/tags/with'
-    autoload :Block,    'h2o/tags/block'
-    autoload :Extends,  'h2o/tags/extends'
+    require 'h2o/tags/if'
+    require 'h2o/tags/for'
+    require 'h2o/tags/with'
+    require 'h2o/tags/block'
+    require 'h2o/tags/extends'
   end
 end

@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{h2o}
-  s.version = "0.1.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Taylor luk"]
-  s.date = %q{2010-02-21}
+  s.date = %q{2010-02-22}
   s.description = %q{h2o is a django inspired template that offers natural template syntax and easy to integrate.}
   s.email = %q{subjective@gmail.com}
   s.extra_rdoc_files = [
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
      "example/h2o/index.html",
      "example/h2o/inherit.html",
      "example/h2o/layout.html",
+     "example/liquid/base.html",
      "example/request.html",
      "example/run.rb",
      "example/server",
@@ -43,21 +44,26 @@ Gem::Specification.new do |s|
      "lib/h2o/constants.rb",
      "lib/h2o/context.rb",
      "lib/h2o/datatype.rb",
+     "lib/h2o/error.rb",
      "lib/h2o/filters.rb",
      "lib/h2o/filters/default.rb",
      "lib/h2o/nodes.rb",
      "lib/h2o/parser.rb",
      "lib/h2o/tags.rb",
      "lib/h2o/tags/block.rb",
+     "lib/h2o/tags/extends.rb",
      "lib/h2o/tags/for.rb",
      "lib/h2o/tags/if.rb",
      "lib/h2o/tags/with.rb",
+     "lib/h2o/template.rb",
      "spec/context_spec.rb",
      "spec/filters_spec.rb",
      "spec/parser_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
-     "spec/tags_spec.rb"
+     "spec/tags/block_spec.rb",
+     "spec/tags/for_spec.rb",
+     "spec/tags/if_spec.rb"
   ]
   s.homepage = %q{http://www.h2o-template.org}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -69,8 +75,9 @@ Gem::Specification.new do |s|
      "spec/filters_spec.rb",
      "spec/parser_spec.rb",
      "spec/spec_helper.rb",
-     "spec/tags_spec.rb",
-     "spec/template_spec.rb"
+     "spec/tags/block_spec.rb",
+     "spec/tags/for_spec.rb",
+     "spec/tags/if_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
