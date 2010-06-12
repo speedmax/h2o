@@ -6,6 +6,7 @@ $:.unshift File.dirname(__FILE__) unless $:.include?(File.dirname(__FILE__))
 
 module H2o
   autoload :Template,   'h2o/template'
+  autoload :FileLoader, 'h2o/file_loader'
   autoload :Error,      'h2o/error'
   autoload :Context,    'h2o/context'
   autoload :Parser,     'h2o/parser'
@@ -20,5 +21,13 @@ module H2o
     require 'h2o/tags/with'
     require 'h2o/tags/block'
     require 'h2o/tags/extends'
+  end
+
+  def self.loader
+    @loader
+  end
+  
+  def self.loader=(loader)
+    @loader = loader
   end
 end

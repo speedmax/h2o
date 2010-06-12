@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+  <title>{{ site.title | capitalize }} - Design, Development and New Media Marketing</title>
+
+{{ 'stylesheets/layout.css'| css_tag }}
+
+    <!--[if IE]>
+	<style type="text/css">
+		@import "ie_layout.css";
+	</style>
+	<![endif]-->
+</head>
+<body>
+<div id="centered">
+	<div id="top">
+		<!-- Left column -->
+		<div id="left">
+			<!-- Logo -->
+			<a href="#" id="logo">jnCentral.com</a>
+			<!-- Mini navigation -->
+			<ul id="mininav">
+
+
+
+      {% if page.children %}
+        <li><a href="#" class="active"><span class="homepage">Homepage</span></a></li>
+        <ul>
+        {% for page in page.children %}
+          <li>{{ page.title | links_to page.url }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+				
+				<li><a href="#"><span class="products">View our products catalog</span></a></li>
+				<li><a href="#"><span class="services">Check out our wide range of services</span></a></li>
+				<li><a href="#"><span class="about">Find out about our company</span></a></li>
+				<li><a href="#"><span class="contact">Get in contact with us</span></a></li>
+			</ul>
+			<!-- Gallery -->
+			<div id="gallery">
+				<div>
+					<ul>
+						<li><a href="#"><img src="images/img1.gif" alt="" /></a></li>
+						<li><a href="#"><img src="images/img2.gif" alt="" /></a></li>
+						<li><a href="#"><img src="images/img3.gif" alt="" /></a></li>
+					</ul>
+					<ul>
+						<li><a href="#"><img src="images/img5.gif" alt="" /></a></li>
+						<li><a href="#"><img src="images/img6.gif" alt="" /></a></li>
+						<li><a href="#"><img src="images/img7.gif" alt="" /></a></li>
+					</ul>
+				</div>
+				<img src="{{'images/mypics.gif'| base_url}}" alt="" class="floatright" />
+			</div>
+			<!-- Latest News -->
+			<div id="news">
+				<h2 id="latestnews">Latest News</h2>
+
+      {% for article in site.latest_articles %}
+        {{ article.title| links_to article.url }}  <span class="date">{{article.published_at}}</span><br />
+<p>{{ article.excerpt}}</p>
+      {% endfor %}
+
+				<br />
+			</div>
+		</div>
+		<!-- Right column -->
+		<div id="right">
+			<!-- Main navigation -->
+			<ul id="navigation">
+				<li><a href="#"><span>Home</span></a></li>
+				<li><a href="#"><span>Products</span></a></li>
+				<li><a href="#"><span>Services</span></a></li>
+				<li><a href="#"><span>Contact us</span></a></li>
+			</ul>
+			{{ content_for_layout }}
+		</div>
+	</div>
+</div>
+<!-- Footer -->
+<div id="footer">
+	<div class="copyright">
+		<h4>Copyright © jnCentral.com.  All rights reserved.</h4>
+		<!-- Mini navigation -->
+		<div class="nav">
+			<a href="#">Home</a>     <a href="#">Products</a>     <a href="#">Services</a>     <a href="#">About us</a>     <a href="#">Contact</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>
