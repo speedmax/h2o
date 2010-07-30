@@ -29,20 +29,20 @@ module H2o
         length = 0
 
         if iteratable.respond_to?(:each)
-          length = iteratable.size || iterabe.length
+          length = iteratable.size || iteratable.length
         end
         
         if length > 0
           parent = context[:loop]
+          index = 0
           # Main iteration
           context.stack do
-            iteratable.each_with_index do |*args|
-              value, index = args
-
-              if args.first.is_a? Array
-                key, value = value
+            iteratable.each do |item|
+              if item.is_a?(Array)
+                key, value = item
               else
                 key = index
+                value = item
               end
 
               is_even = index % 2 != 0
@@ -61,6 +61,7 @@ module H2o
                 :odd => !is_even
               }
               @body.render(context, stream)
+              index += 1
             end
           end
         else
