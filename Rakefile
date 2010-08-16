@@ -8,13 +8,15 @@ end
 
 begin
   require 'jeweler'
-  Jeweler::Tasks.new do |gemspec|
-    gemspec.name = "h2o"
-    gemspec.summary = "h2o is a django inspired template"
-    gemspec.description = "h2o is a django inspired template that offers natural template syntax and easy to integrate."
-    gemspec.email = "subjective@gmail.com"
-    gemspec.homepage = "http://www.h2o-template.org"
-    gemspec.authors = ["Taylor luk"]
+  Jeweler::Tasks.new do |s|
+    s.name = "h2o"
+    s.summary = "h2o is a django inspired template"
+    s.description = "h2o is a django inspired template that offers natural template syntax and easy to integrate."
+    s.email = "subjective@gmail.com"
+    s.homepage = "http://www.h2o-template.org"
+    s.authors = ["Taylor luk"]
+    s.add_dependency 'schacon-git'
+    
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"

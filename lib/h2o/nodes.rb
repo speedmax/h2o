@@ -63,6 +63,10 @@ module H2o
   end
 
   class CommentNode < Node
+    def initialize()
+    end
+    
+    def render(context, stream)
+    end
   end
-
 end

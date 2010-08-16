@@ -4,8 +4,8 @@ module H2o
   BLOCK_END = '%}'
   VAR_START = '{{'
   VAR_END = '}}'
-  COMMENT_START = '{*'
-  COMMENT_END = '*}'
+  COMMENT_START = '{#'
+  COMMENT_END = '#}'
 
   PIPE_RE = /\|/
   SEPERATOR_RE = /,/

@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Taylor luk"]
-  s.date = %q{2010-02-22}
+  s.date = %q{2010-06-12}
   s.description = %q{h2o is a django inspired template that offers natural template syntax and easy to integrate.}
   s.email = %q{subjective@gmail.com}
   s.extra_rdoc_files = [
@@ -56,35 +56,42 @@ Gem::Specification.new do |s|
      "lib/h2o/tags/if.rb",
      "lib/h2o/tags/with.rb",
      "lib/h2o/template.rb",
-     "spec/context_spec.rb",
-     "spec/filters_spec.rb",
-     "spec/parser_spec.rb",
+     "spec/fixtures/_partial.html",
+     "spec/fixtures/a.html",
+     "spec/fixtures/b.html",
+     "spec/fixtures/deep/folder/c.html",
+     "spec/h2o/context_spec.rb",
+     "spec/h2o/default.html",
+     "spec/h2o/file_loader_spec.rb",
+     "spec/h2o/filters_spec.rb",
+     "spec/h2o/parser_spec.rb",
+     "spec/h2o/tags/block_spec.rb",
+     "spec/h2o/tags/for_spec.rb",
+     "spec/h2o/tags/if_spec.rb",
      "spec/spec.opts",
-     "spec/spec_helper.rb",
-     "spec/tags/block_spec.rb",
-     "spec/tags/for_spec.rb",
-     "spec/tags/if_spec.rb"
+     "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://www.h2o-template.org}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{h2o is a django inspired template}
   s.test_files = [
-    "spec/context_spec.rb",
-     "spec/filters_spec.rb",
-     "spec/parser_spec.rb",
-     "spec/spec_helper.rb",
-     "spec/tags/block_spec.rb",
-     "spec/tags/for_spec.rb",
-     "spec/tags/if_spec.rb"
+    "spec/h2o/context_spec.rb",
+     "spec/h2o/file_loader_spec.rb",
+     "spec/h2o/filters_spec.rb",
+     "spec/h2o/parser_spec.rb",
+     "spec/h2o/tags/block_spec.rb",
+     "spec/h2o/tags/for_spec.rb",
+     "spec/h2o/tags/if_spec.rb",
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
     else
     end
   else
