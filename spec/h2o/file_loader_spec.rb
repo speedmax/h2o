@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe H2o::FileLoader do
   before do
-    path = File.expand_path("../../fixtures", __FILE__)
-    @loader = H2o::FileLoader.new(path)
+    @path = File.expand_path("../../fixtures", __FILE__)
+    @loader = H2o::FileLoader.new(@path)
   end
   
   it "search for template on a search path on file system" do
@@ -19,9 +19,13 @@ describe H2o::FileLoader do
   it "raises error when template doesn't exist" do
     expect { @loader.read('non-existence.html') }.should raise_error
   end
+  
+  it "should be able to it from template class" do
+    H2o::Template.load('deep/folder/c.html', :searchpath => @path).render.should == 'hello'
+  end
 end
 
-describe "H2o::HashLoader" do
+describe H2o::HashLoader do
   it "read file on the same namespace in a hash" do
     H2o.loader = H2o::HashLoader.new(
       'base.html' => '{% block content %}test{% endblock %}',

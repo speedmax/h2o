@@ -7,7 +7,7 @@ describe H2o::Tags::Block do
   end
   
   
-  context "block variable" do
+  describe "block variable" do
     it "should return block name" do
       parse(block(:something, '{{ block.name }}')).render.should == 'something'
     end
@@ -17,7 +17,8 @@ describe H2o::Tags::Block do
       parse(source).render.should == "1"
     end
     
-    it "should return parent block content"
+    it "should return parent block content" do
+    end
   end
 
   def block(name, content)

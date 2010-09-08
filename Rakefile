@@ -15,8 +15,6 @@ begin
     s.email = "subjective@gmail.com"
     s.homepage = "http://www.h2o-template.org"
     s.authors = ["Taylor luk"]
-    s.add_dependency 'schacon-git'
-    
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: gem install jeweler"

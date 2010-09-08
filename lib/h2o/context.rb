@@ -111,7 +111,7 @@ module H2o
   
   class DataObject
     INTERNAL_METHOD = /^__/
-    @@required_methods = [:__send__, :__id__, :object_id, :respond_to?, :extend, :methods, :class, :nil?, :is_a?, :to_h2o]
+    @@required_methods = [:__send__, :__id__, :object_id, :respond_to?, :extend, :methods, :class, :nil?, :is_a?, :to_h2o, :respond_to_missing?]
 
     def respond_to?(method)
       method_name = method.to_s

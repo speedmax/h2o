@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Taylor luk"]
-  s.date = %q{2010-08-30}
+  s.date = %q{2010-09-08}
   s.description = %q{h2o is a django inspired template that offers natural template syntax and easy to integrate.}
   s.email = %q{subjective@gmail.com}
   s.extra_rdoc_files = [
@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
      "lib/h2o/context.rb",
      "lib/h2o/datatype.rb",
      "lib/h2o/error.rb",
+     "lib/h2o/file_loader.rb",
      "lib/h2o/filters.rb",
      "lib/h2o/filters/default.rb",
      "lib/h2o/nodes.rb",
@@ -63,6 +64,7 @@ Gem::Specification.new do |s|
      "spec/h2o/context_spec.rb",
      "spec/h2o/default.html",
      "spec/h2o/file_loader_spec.rb",
+     "spec/h2o/file_loader_spec.rbc",
      "spec/h2o/filters_spec.rb",
      "spec/h2o/parser_spec.rb",
      "spec/h2o/tags/block_spec.rb",
