@@ -55,4 +55,29 @@ describe H2o::Tags::If do
       parse('{% if ! 2 > 3 %}Y{% endif %}').render.should == 'Y'
     end
   end
+  
+  describe "filter#contain" do
+    context "When array" do
+      it "checks existence of item in a list" do
+        parse(
+          "{% if items|contain 1 %}true{% endif %}"
+        ).render(:items => [1,2,3]).should == "true"
+        parse(
+          "{% if items|contain 4 %}true{% else %}false{%endif%}"
+        ).render(:items => [1,2,3]).should == "false"
+      end      
+    end
+    
+    context "When string" do
+      it "checks existence of item in a list" do
+        parse(
+          "{% if 'test'|contain 'est' %}true{% endif %}"
+        ).render.should == "true"
+        parse(
+          "{% if 'test'|contain 'tet' %}true{% else %}false{%endif%}"
+        ).render.should == "false"
+      end
+    end
+
+  end
 end

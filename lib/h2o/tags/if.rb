@@ -10,12 +10,16 @@ module H2o
         @body = parser.parse(:else, :endif)
         @else = parser.parse(:endif) if parser.token.include? 'else'
         @args = Parser.parse_arguments(argstring)
-        
+
         # Negated condition
         first = @args.first
         if first.is_a?(Hash) && first[:operator] && [:"!", :not].include?(first[:operator])
          @negated = true
          @args.shift
+        end
+        
+        if @args[1].is_a?(Array)
+          @filters = [@args.pop]
         end
       end
 
@@ -30,7 +34,11 @@ module H2o
       def evaluate(context)
         # Implicity evaluation
         if @args.size == 1
+
           object = context.resolve(@args.first)
+
+          object = context.apply_filters(object, @filters) if @filters
+          
           if object == false
             result = false
           elsif object == true

@@ -42,6 +42,9 @@ module DefaultFilters
     list.last
   end
 
+  def contain(object, item)
+    object.include?(item)
+  end
 
   H2o::Filters << self
 end
