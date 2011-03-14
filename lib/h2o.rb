@@ -21,6 +21,7 @@ module H2o
     require 'h2o/tags/with'
     require 'h2o/tags/block'
     require 'h2o/tags/extends'
+    require 'h2o/tags/raw'
   end
 
   def self.loader

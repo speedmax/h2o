@@ -9,6 +9,10 @@ module H2o
       def register(tag, name)
         @tags[name] = tag
       end
+      
+      def all
+        @tags
+      end
     end
     
     class Tag < Node; end

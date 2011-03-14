@@ -1,6 +1,6 @@
 module H2o
   class Parser 
-    attr_reader :token, :env
+    attr_reader :token, :env, :source
     attr_accessor :storage
     
     ParseRegex = /\G
@@ -96,7 +96,7 @@ module H2o
             
             tag = Tags[name]
             raise "Unknow tag #{name}" if tag.nil?
-            
+
             nodelist << tag.new(self, args) if tag
           when :comment
             nodelist << CommentNode.new(content)
